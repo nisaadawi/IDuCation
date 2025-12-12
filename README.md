@@ -45,19 +45,6 @@ IDuCation integrates three core functions into the Smart ID:
 
 ---
 
-## 📂 Repository Structure  
-```
-IDuCation/
-├── backend/          # API, authentication, database models
-├── frontend/         # PWA for students, teachers, admin dashboards
-├── hardware/         # Prototype schematics and firmware
-├── docs/             # Research, privacy guidelines, user manuals
-├── tests/            # Unit and integration tests
-└── README.md         # This file
-```
-
----
-
 ## 🧑‍💻 Team  
 | Name | Role | Focus |
 |------|------|-------|
@@ -68,6 +55,7 @@ IDuCation/
 ---
 
 ## 🔗 Links  
+- **Live Demo**: [https://hfsha.com/IDuCation-web/index.html](https://hfsha.com/IDuCation-web/index.html)
 - **Pitch Deck**: [PITCH DECK OJOUSAMA.pdf](PITCH%20DECK%20OJOUSAMA.pdf)  
 - **GitHub Repository**: [https://github.com/your-username/IDuCation](https://github.com/your-username/IDuCation)  
 - **Hackathon Track**: Inclusivity (GODAM Lahl 2.0 Smart ID Hackathon)
