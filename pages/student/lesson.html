@@ -1,0 +1,390 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>English Basics - Module 5 - IDuCation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/student-dashboard.css">
+    <link rel="stylesheet" href="../../css/lesson.css">
+</head>
+<body class="student-page">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar-nav" id="sidebarNav">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-content">
+                <div class="sidebar-logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="sidebar-logo-text">
+                    <h3>IDuCation</h3>
+                    <p>Student Portal</p>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-nav-items">
+            <a href="home.html" class="sidebar-nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="learn.html" class="sidebar-nav-item active">
+                <i class="fas fa-book"></i>
+                <span>Learn</span>
+            </a>
+            <a href="rewards.html" class="sidebar-nav-item">
+                <i class="fas fa-gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="profile.html" class="sidebar-nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="../../login.html" class="sidebar-logout-btn">
+                <div class="logout-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <span class="logout-text">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Toggle Button (Mobile) -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Top Header Bar -->
+    <header class="student-header">
+        <div class="container">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="welcome-text">
+                    <h2>Welcome Back!</h2>
+                    <p class="student-name">Ahmad</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- Latest Badge -->
+                <div class="latest-badge-header">
+                    <div class="latest-badge-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="latest-badge-info">
+                        <span class="latest-badge-label">Latest Badge</span>
+                        <span class="latest-badge-name">Week Warrior</span>
+                    </div>
+                </div>
+                <div class="xp-points-card">
+                    <div class="xp-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="xp-info">
+                        <span class="xp-label">XPPoints</span>
+                        <span class="xp-value">1,250</span>
+                    </div>
+                </div>
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="lesson-container">
+        <div class="container">
+            <!-- Progress Bar -->
+            <div class="lesson-progress-bar-container">
+                <div class="lesson-progress-bar">
+                    <div class="lesson-progress-fill" id="lessonProgress" style="width: 60%"></div>
+                </div>
+            </div>
+
+            <!-- Question Container -->
+            <div class="question-container" id="questionContainer">
+                <!-- Question 1: Story Reading -->
+                <div class="question-card active" data-question="1">
+                    <div class="question-header">
+                        <div class="question-number">Question 1 of 5</div>
+                        <div class="question-type">
+                            <i class="fas fa-book-reader"></i>
+                            Read the Story
+                        </div>
+                    </div>
+                    
+                    <div class="story-box">
+                        <div class="story-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="story-content">
+                            <h3>The Little Bird</h3>
+                            <p>Once upon a time, there was a <strong>little bird</strong> who lived in a tall tree. The bird loved to <strong>sing</strong> every morning. One day, the bird saw a <strong>beautiful flower</strong> in the garden. The bird flew down to see the flower. The flower was red and smelled very nice.</p>
+                        </div>
+                    </div>
+
+                    <div class="question-text">
+                        <h3>What did the bird love to do every morning?</h3>
+                    </div>
+
+                    <div class="answer-options">
+                        <button class="answer-option" data-correct="false">
+                            <div class="option-icon">A</div>
+                            <div class="option-text">Fly in the sky</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option correct" data-correct="true">
+                            <div class="option-icon">B</div>
+                            <div class="option-text">Sing songs</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option" data-correct="false">
+                            <div class="option-icon">C</div>
+                            <div class="option-text">Eat food</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option" data-correct="false">
+                            <div class="option-icon">D</div>
+                            <div class="option-text">Sleep all day</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                    </div>
+
+                    <div class="feedback-message" id="feedback1"></div>
+                </div>
+
+                <!-- Question 2: Fill in the Blank -->
+                <div class="question-card" data-question="2">
+                    <div class="question-header">
+                        <div class="question-number">Question 2 of 5</div>
+                        <div class="question-type">
+                            <i class="fas fa-edit"></i>
+                            Complete the Sentence
+                        </div>
+                    </div>
+
+                    <div class="story-box">
+                        <div class="story-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="story-content">
+                            <p>The bird saw a <strong>beautiful flower</strong> in the garden. The flower was <strong>red</strong> and smelled very nice.</p>
+                        </div>
+                    </div>
+
+                    <div class="question-text">
+                        <h3>Complete the sentence:</h3>
+                        <div class="fill-blank-question">
+                            The flower was <span class="blank-input-container">
+                                <input type="text" class="blank-input" id="blank1" placeholder="?" maxlength="10">
+                            </span> and smelled very nice.
+                        </div>
+                    </div>
+
+                    <div class="answer-hint">
+                        <i class="fas fa-lightbulb"></i>
+                        <span>Hint: The story says the flower was a color. What color was it?</span>
+                    </div>
+
+                    <button class="submit-answer-btn" onclick="checkFillBlank(1, 'red')">
+                        <i class="fas fa-check"></i>
+                        Check Answer
+                    </button>
+
+                    <div class="feedback-message" id="feedback2"></div>
+                </div>
+
+                <!-- Question 3: Multiple Choice - Story Details -->
+                <div class="question-card" data-question="3">
+                    <div class="question-header">
+                        <div class="question-number">Question 3 of 5</div>
+                        <div class="question-type">
+                            <i class="fas fa-question-circle"></i>
+                            Story Details
+                        </div>
+                    </div>
+
+                    <div class="story-box">
+                        <div class="story-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="story-content">
+                            <p>The <strong>little bird</strong> lived in a <strong>tall tree</strong>. The bird loved to sing every morning.</p>
+                        </div>
+                    </div>
+
+                    <div class="question-text">
+                        <h3>Where did the bird live?</h3>
+                    </div>
+
+                    <div class="answer-options">
+                        <button class="answer-option" data-correct="false">
+                            <div class="option-icon">A</div>
+                            <div class="option-text">In a small house</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option" data-correct="false">
+                            <div class="option-icon">B</div>
+                            <div class="option-text">In a garden</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option correct" data-correct="true">
+                            <div class="option-icon">C</div>
+                            <div class="option-text">In a tall tree</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option" data-correct="false">
+                            <div class="option-icon">D</div>
+                            <div class="option-text">In a nest on the ground</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                    </div>
+
+                    <div class="feedback-message" id="feedback3"></div>
+                </div>
+
+                <!-- Question 4: True or False -->
+                <div class="question-card" data-question="4">
+                    <div class="question-header">
+                        <div class="question-number">Question 4 of 5</div>
+                        <div class="question-type">
+                            <i class="fas fa-check-square"></i>
+                            True or False
+                        </div>
+                    </div>
+
+                    <div class="story-box">
+                        <div class="story-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="story-content">
+                            <p>The bird flew down to see the flower. The flower was red and smelled very nice.</p>
+                        </div>
+                    </div>
+
+                    <div class="question-text">
+                        <h3>The bird flew down to see the flower.</h3>
+                    </div>
+
+                    <div class="answer-options true-false">
+                        <button class="answer-option true-option correct" data-correct="true">
+                            <div class="option-icon">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <div class="option-text">True</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option false-option" data-correct="false">
+                            <div class="option-icon">
+                                <i class="fas fa-times"></i>
+                            </div>
+                            <div class="option-text">False</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                    </div>
+
+                    <div class="feedback-message" id="feedback4"></div>
+                </div>
+
+                <!-- Question 5: Picture Story Order -->
+                <div class="question-card" data-question="5">
+                    <div class="question-header">
+                        <div class="question-number">Question 5 of 5</div>
+                        <div class="question-type">
+                            <i class="fas fa-images"></i>
+                            Story Order
+                        </div>
+                    </div>
+
+                    <div class="story-box">
+                        <div class="story-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="story-content">
+                            <p>Read the story again: The little bird lived in a tall tree. The bird loved to sing every morning. One day, the bird saw a beautiful flower. The bird flew down to see the flower.</p>
+                        </div>
+                    </div>
+
+                    <div class="question-text">
+                        <h3>What happened first in the story?</h3>
+                    </div>
+
+                    <div class="answer-options">
+                        <button class="answer-option" data-correct="false">
+                            <div class="option-icon">A</div>
+                            <div class="option-text">The bird saw a flower</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option correct" data-correct="true">
+                            <div class="option-icon">B</div>
+                            <div class="option-text">The bird lived in a tall tree</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option" data-correct="false">
+                            <div class="option-icon">C</div>
+                            <div class="option-text">The bird flew down</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                        <button class="answer-option" data-correct="false">
+                            <div class="option-icon">D</div>
+                            <div class="option-text">The bird sang songs</div>
+                            <i class="fas fa-check-circle check-icon"></i>
+                        </button>
+                    </div>
+
+                    <div class="feedback-message" id="feedback5"></div>
+                </div>
+            </div>
+
+            <!-- Completion Screen -->
+            <div class="completion-screen" id="completionScreen" style="display: none;">
+                <div class="completion-content">
+                    <div class="completion-icon">
+                        <i class="fas fa-trophy"></i>
+                    </div>
+                    <h2>Great Job!</h2>
+                    <p class="completion-message">You completed Module 5!</p>
+                    <div class="completion-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>5/5 Correct</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-coins"></i>
+                            <span>+50 XP Earned</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-fire"></i>
+                            <span>Streak +1</span>
+                        </div>
+                    </div>
+                    <div class="completion-actions">
+                        <button class="btn-primary" onclick="window.location.href='learn.html'">
+                            <i class="fas fa-arrow-left"></i>
+                            Back to Modules
+                        </button>
+                        <button class="btn-secondary" onclick="window.location.href='home.html'">
+                            <i class="fas fa-home"></i>
+                            Go Home
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <script src="../../js/lesson.js"></script>
+    <script src="../../js/student-dashboard.js"></script>
+</body>
+</html>
+

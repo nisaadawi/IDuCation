@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDuCation - Student Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/student-dashboard.css">
+</head>
+<body class="student-page">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar-nav" id="sidebarNav">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-content">
+                <div class="sidebar-logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="sidebar-logo-text">
+                    <h3>IDuCation</h3>
+                    <p>Student Portal</p>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-nav-items">
+            <a href="home.html" class="sidebar-nav-item active">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="learn.html" class="sidebar-nav-item">
+                <i class="fas fa-book"></i>
+                <span>Learn</span>
+            </a>
+            <a href="rewards.html" class="sidebar-nav-item">
+                <i class="fas fa-gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="profile.html" class="sidebar-nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="../../login.html" class="sidebar-logout-btn">
+                <div class="logout-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <span class="logout-text">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Toggle Button (Mobile) -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Top Header Bar -->
+    <header class="student-header">
+        <div class="container">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="welcome-text">
+                    <h2>Welcome Back!</h2>
+                    <p class="student-name">Ahmad</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- Latest Badge -->
+                <div class="latest-badge-header">
+                    <div class="latest-badge-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="latest-badge-info">
+                        <span class="latest-badge-label">Latest Badge</span>
+                        <span class="latest-badge-name">Week Warrior</span>
+                    </div>
+                </div>
+                <div class="xp-points-card">
+                    <div class="xp-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="xp-info">
+                        <span class="xp-label">XPPoints</span>
+                        <span class="xp-value">1,250</span>
+                    </div>
+                </div>
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="student-dashboard">
+        <div class="container">
+            <!-- Weekly Streak - Moved to Top -->
+            <section class="streak-section">
+                <div class="streak-card">
+                    <div class="streak-icon-large">
+                        <i class="fas fa-fire"></i>
+                    </div>
+                    <div class="streak-info">
+                        <h3>7 Day Streak!</h3>
+                        <p>You're on fire! Keep learning every day.</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Learning Path - Continue Your Modules -->
+            <section class="learning-path-section">
+                <div class="section-header">
+                    <h2 class="section-title-visual">
+                        <i class="fas fa-book-open"></i>
+                        Continue Learning
+                    </h2>
+                </div>
+
+                <!-- Duolingo-Style Lesson Path -->
+                <div class="duolingo-path-container">
+                    <div class="lesson-path">
+                        <!-- START Lesson -->
+                        <div class="path-lesson start-lesson completed">
+                            <div class="lesson-circle completed-circle">
+                                <div class="lesson-circle-inner">
+                                    <i class="fas fa-star"></i>
+                                </div>
+                                <svg class="progress-ring" viewBox="0 0 100 100">
+                                    <circle class="progress-ring-circle" cx="50" cy="50" r="45"></circle>
+                                    <circle class="progress-ring-fill" cx="50" cy="50" r="45" style="stroke-dashoffset: 28"></circle>
+                                </svg>
+                            </div>
+                            <span class="lesson-label">START</span>
+                            <button class="path-lesson-btn start-btn" onclick="startLesson('start')">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+
+                        <!-- Path Connector -->
+                        <div class="path-connector"></div>
+
+                        <!-- Lesson 1 - Completed -->
+                        <div class="path-lesson completed">
+                            <div class="lesson-circle completed-circle">
+                                <div class="lesson-circle-inner">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <span class="lesson-label">Module 1</span>
+                            <button class="path-lesson-btn review-btn" onclick="reviewLesson(1)">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+
+                        <div class="path-connector"></div>
+
+                        <!-- Lesson 2 - Completed -->
+                        <div class="path-lesson completed">
+                            <div class="lesson-circle completed-circle">
+                                <div class="lesson-circle-inner">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                            </div>
+                            <span class="lesson-label">Module 2</span>
+                            <button class="path-lesson-btn review-btn" onclick="reviewLesson(2)">
+                                <i class="fas fa-redo"></i>
+                            </button>
+                        </div>
+
+                        <div class="path-connector"></div>
+
+                        <!-- Lesson 3 - Current/Locked -->
+                        <div class="path-lesson current">
+                            <div class="current-lesson-badge">
+                                <i class="fas fa-book"></i>
+                                <span>English Basics</span>
+                            </div>
+                            <div class="lesson-circle current-circle">
+                                <div class="lesson-circle-inner">
+                                    <i class="fas fa-play"></i>
+                                </div>
+                                <svg class="progress-ring" viewBox="0 0 100 100">
+                                    <circle class="progress-ring-circle" cx="50" cy="50" r="45"></circle>
+                                    <circle class="progress-ring-fill" cx="50" cy="50" r="45" style="stroke-dashoffset: 70"></circle>
+                                </svg>
+                            </div>
+                            <span class="lesson-label">Module 3</span>
+                            <button class="path-lesson-btn current-btn" onclick="startLesson(3)">
+                                <i class="fas fa-play"></i>
+                            </button>
+                        </div>
+
+                        <div class="path-connector"></div>
+
+                        <!-- Challenge/Chest -->
+                        <div class="path-lesson challenge locked">
+                            <div class="lesson-rectangle locked-rectangle">
+                                <i class="fas fa-trophy"></i>
+                            </div>
+                            <span class="lesson-label">Challenge</span>
+                        </div>
+
+                        <div class="path-connector"></div>
+
+                        <!-- Lesson 4 - Locked -->
+                        <div class="path-lesson locked">
+                            <div class="lesson-circle locked-circle">
+                                <div class="lesson-circle-inner">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                            </div>
+                            <span class="lesson-label">Module 4</span>
+                        </div>
+
+                        <div class="path-connector"></div>
+
+                        <!-- Lesson 5 - Locked -->
+                        <div class="path-lesson locked">
+                            <div class="lesson-circle locked-circle">
+                                <div class="lesson-circle-inner">
+                                    <i class="fas fa-lock"></i>
+                                </div>
+                            </div>
+                            <span class="lesson-label">Module 5</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Daily Progress Card -->
+            <section class="daily-progress-section">
+                <div class="progress-card">
+                    <div class="progress-header">
+                        <div class="progress-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="progress-info">
+                            <h3>Today's Progress</h3>
+                            <p class="progress-subtitle">Keep learning every day!</p>
+                        </div>
+                    </div>
+                    <div class="progress-bar-container">
+                        <div class="progress-bar">
+                            <div class="progress-fill" style="width: 65%"></div>
+                        </div>
+                        <span class="progress-text">65% Complete</span>
+                    </div>
+                    <div class="progress-stats">
+                        <div class="stat-item">
+                            <i class="fas fa-check-circle"></i>
+                            <span>3 Modules Done</span>
+                        </div>
+                        <div class="stat-item">
+                            <i class="fas fa-clock"></i>
+                            <span>25 Minutes</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Three Core Functions -->
+            <section class="core-functions">
+                <h2 class="section-title-visual">
+                    <i class="fas fa-star"></i>
+                    What You Can Do
+                </h2>
+                
+                <!-- Attendance Status -->
+                <div class="attendance-status-card">
+                    <div class="attendance-header">
+                        <div class="attendance-icon">
+                            <i class="fas fa-calendar-check"></i>
+                        </div>
+                        <div class="attendance-info">
+                            <h3>Attendance Status</h3>
+                            <p class="attendance-date">Today, December 15, 2024</p>
+                        </div>
+                    </div>
+                    <div class="attendance-status-badge present">
+                        <i class="fas fa-check-circle"></i>
+                        <span>Present - Checked In</span>
+                    </div>
+                    <p class="attendance-note">Your attendance is recorded when you scan your Smart ID at the study center.</p>
+                </div>
+
+                <!-- LEARN & GROW Function -->
+                <div class="function-card learn-card">
+                    <div class="function-header">
+                        <div class="function-icon learn-icon">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="function-label learn-label">LEARN & GROW</div>
+                    </div>
+                    <div class="function-content">
+                        <div class="function-description">
+                            <p>Learn with fun modules made just for you. Earn badges and track your progress!</p>
+                        </div>
+                        <div class="learn-stats">
+                            <div class="learn-stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-book"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-number">12</span>
+                                    <span class="stat-label">Modules</span>
+                                </div>
+                            </div>
+                            <div class="learn-stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-trophy"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-number">8</span>
+                                    <span class="stat-label">Badges</span>
+                                </div>
+                            </div>
+                            <div class="learn-stat-item">
+                                <div class="stat-icon">
+                                    <i class="fas fa-chart-line"></i>
+                                </div>
+                                <div class="stat-info">
+                                    <span class="stat-number">75%</span>
+                                    <span class="stat-label">Progress</span>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="function-actions">
+                            <button class="action-btn learn-btn" onclick="window.location.href='learn.html'">
+                                <i class="fas fa-play"></i>
+                                <span>Start Learning</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- REWARD & EMPOWER Function -->
+                <div class="function-card reward-card">
+                    <div class="function-header">
+                        <div class="function-icon reward-icon">
+                            <i class="fas fa-gift"></i>
+                        </div>
+                        <div class="function-label reward-label">REWARD & EMPOWER</div>
+                    </div>
+                    <div class="function-content">
+                        <div class="function-description">
+                            <p>Use your XPPoints to get help and support. Redeem for school supplies, food, or internet data!</p>
+                        </div>
+                        <div class="reward-showcase">
+                            <div class="reward-item">
+                                <i class="fas fa-book"></i>
+                                <span>School Supplies</span>
+                            </div>
+                            <div class="reward-item">
+                                <i class="fas fa-utensils"></i>
+                                <span>Food Vouchers</span>
+                            </div>
+                            <div class="reward-item">
+                                <i class="fas fa-wifi"></i>
+                                <span>Internet Data</span>
+                            </div>
+                        </div>
+                        <div class="function-actions">
+                            <button class="action-btn reward-btn" onclick="window.location.href='rewards.html'">
+                                <i class="fas fa-shopping-cart"></i>
+                                <span>View Rewards</span>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Achievement Badges -->
+            <section class="badges-section">
+                <h2 class="section-title-visual">
+                    <i class="fas fa-medal"></i>
+                    Achievement Badges
+                </h2>
+                <div class="badges-container">
+                    <div class="badges-grid">
+                    <div class="badge-card earned">
+                        <div class="badge-icon-large">
+                            <i class="fas fa-trophy"></i>
+                        </div>
+                        <h4>First Steps</h4>
+                        <p>Complete 5 modules</p>
+                        <div class="badge-points">
+                            <i class="fas fa-coins"></i>
+                            <span>+100 XP</span>
+                        </div>
+                        <div class="badge-status earned">
+                            <i class="fas fa-check"></i>
+                            <span>Earned</span>
+                        </div>
+                    </div>
+                    <div class="badge-card earned">
+                        <div class="badge-icon-large">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <h4>Week Warrior</h4>
+                        <p>Learn 7 days in a row</p>
+                        <div class="badge-points">
+                            <i class="fas fa-coins"></i>
+                            <span>+250 XP</span>
+                        </div>
+                        <div class="badge-status earned">
+                            <i class="fas fa-check"></i>
+                            <span>Earned</span>
+                        </div>
+                    </div>
+                    <div class="badge-card locked">
+                        <div class="badge-icon-large">
+                            <i class="fas fa-book-reader"></i>
+                        </div>
+                        <h4>Bookworm</h4>
+                        <p>Complete 20 modules</p>
+                        <div class="badge-points">
+                            <i class="fas fa-coins"></i>
+                            <span>+500 XP</span>
+                        </div>
+                        <div class="badge-status locked">
+                            <i class="fas fa-lock"></i>
+                            <span>Locked</span>
+                        </div>
+                    </div>
+                    <div class="badge-card locked">
+                        <div class="badge-icon-large">
+                            <i class="fas fa-fire"></i>
+                        </div>
+                        <h4>Hot Streak</h4>
+                        <p>Learn 30 days in a row</p>
+                        <div class="badge-points">
+                            <i class="fas fa-coins"></i>
+                            <span>+1,000 XP</span>
+                        </div>
+                        <div class="badge-status locked">
+                            <i class="fas fa-lock"></i>
+                            <span>Locked</span>
+                        </div>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Featured Learning Module -->
+            <section class="featured-module-section">
+                <div class="featured-module-card">
+                    <div class="featured-header">
+                        <div class="featured-icon">
+                            <i class="fas fa-star"></i>
+                        </div>
+                        <div class="featured-info">
+                            <h3>Continue Learning</h3>
+                            <p>Pick up where you left off</p>
+                        </div>
+                    </div>
+                    <div class="module-preview">
+                        <div class="module-image">
+                            <i class="fas fa-book-open"></i>
+                        </div>
+                        <div class="module-details">
+                            <h4>English Basics - Module 5</h4>
+                            <p class="module-progress">60% Complete</p>
+                            <div class="module-progress-bar">
+                                <div class="module-progress-fill" style="width: 60%"></div>
+                            </div>
+                        </div>
+                    </div>
+                    <button class="continue-btn" onclick="window.location.href='learn.html'">
+                        <i class="fas fa-play-circle"></i>
+                        <span>Continue Module</span>
+                    </button>
+                </div>
+            </section>
+
+        </div>
+    </main>
+
+
+    <script src="../../js/student-dashboard.js"></script>
+</body>
+</html>

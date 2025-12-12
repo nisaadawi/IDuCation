@@ -1,0 +1,2529 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDuCation - Teacher Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/student-dashboard.css">
+    <style>
+        /* Teacher Dashboard Specific Styles */
+        .teacher-header {
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            color: var(--white);
+            padding: 1.0rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .teacher-header .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 0 0 auto;
+        }
+
+        .header-center {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex: 1 1 auto;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 0 0 auto;
+        }
+
+        .logout-btn-teacher {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn-teacher:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .logout-btn-teacher i {
+            font-size: 1rem;
+        }
+
+        .profile-avatar {
+            width: 44px;
+            height: 44px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .profile-avatar:hover {
+            background: rgba(255, 255, 255, 0.3);
+            transform: scale(1.05);
+        }
+
+        .teacher-dashboard {
+            padding: 2rem 0;
+            background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: calc(100vh - 100px);
+        }
+
+        .stats-overview {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .stat-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1.25rem;
+            transition: var(--transition);
+        }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .stat-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: var(--white);
+            flex-shrink: 0;
+        }
+
+        .stat-icon-wrapper.students {
+            background: linear-gradient(135deg, var(--blue), #3b82f6);
+        }
+
+        .stat-icon-wrapper.active {
+            background: linear-gradient(135deg, var(--green), #00d99a);
+        }
+
+        .stat-icon-wrapper.modules {
+            background: linear-gradient(135deg, var(--yellow), #fbbf24);
+        }
+
+        .stat-icon-wrapper.completion {
+            background: linear-gradient(135deg, var(--light-blue), #60a5fa);
+        }
+
+        .stat-content h3 {
+            font-size: 2rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+            margin-bottom: 0.25rem;
+            line-height: 1;
+        }
+
+        .stat-content p {
+            font-size: 0.9rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        .search-filter-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .search-filter-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 250px;
+            position: relative;
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 2px solid rgba(34, 83, 230, 0.2);
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-family: var(--font-primary);
+            color: var(--text-dark);
+            background: rgba(255, 255, 255, 0.95);
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 4px rgba(34, 83, 230, 0.1);
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--blue);
+            font-size: 1rem;
+        }
+
+        .filter-btn {
+            padding: 0.875rem 1.5rem;
+            background: rgba(34, 83, 230, 0.1);
+            border: 2px solid rgba(34, 83, 230, 0.2);
+            border-radius: 12px;
+            color: var(--blue);
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            font-family: var(--font-primary);
+        }
+
+        .filter-btn:hover {
+            background: rgba(34, 83, 230, 0.15);
+            border-color: var(--blue);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            color: var(--white);
+            border-color: transparent;
+        }
+
+        .students-list-section {
+            margin-bottom: 2rem;
+        }
+
+        .section-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 1.5rem;
+        }
+
+        .section-header h2 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .section-header h2 i {
+            color: var(--blue);
+            font-size: 1.6rem;
+        }
+
+        .students-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .student-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            transition: var(--transition);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .student-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+            border-color: var(--blue);
+        }
+
+        .student-card-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .student-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: 700;
+            box-shadow: 0 4px 15px rgba(34, 83, 230, 0.3);
+            flex-shrink: 0;
+        }
+
+        .student-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .student-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .student-status {
+            margin-left: auto;
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .student-status.active {
+            background: var(--light-green);
+            color: var(--green);
+        }
+
+        .student-status.inactive {
+            background: rgba(255, 68, 68, 0.15);
+            color: var(--red);
+        }
+
+        .student-status.struggling {
+            background: rgba(253, 208, 0, 0.2);
+            color: #b8860b;
+        }
+
+        .progress-summary {
+            margin-bottom: 1.25rem;
+        }
+
+        .progress-item {
+            margin-bottom: 1rem;
+        }
+
+        .progress-item:last-child {
+            margin-bottom: 0;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label span {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-label .progress-percentage {
+            color: var(--blue);
+            font-weight: 700;
+        }
+
+        .progress-bar-small {
+            width: 100%;
+            height: 10px;
+            background: var(--light-green);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill-small {
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue), var(--green));
+            border-radius: 10px;
+            transition: width 0.5s ease;
+            box-shadow: 0 2px 6px rgba(34, 83, 230, 0.3);
+        }
+
+        .student-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 0.75rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .mini-stat {
+            text-align: center;
+            padding: 0.75rem;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 12px;
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .mini-stat-number {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+            line-height: 1.2;
+        }
+
+        .mini-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 500;
+            margin-top: 0.25rem;
+        }
+
+        .view-details-btn {
+            width: 100%;
+            padding: 0.875rem 1.5rem;
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(34, 83, 230, 0.25);
+            font-family: var(--font-primary);
+        }
+
+        .view-details-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 83, 230, 0.4);
+        }
+
+        .modules-progress-section {
+            margin-bottom: 2rem;
+        }
+
+        .modules-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .module-progress-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            transition: var(--transition);
+        }
+
+        .module-progress-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .module-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+        }
+
+        .module-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            border-radius: 16px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.5rem;
+            box-shadow: 0 4px 15px rgba(34, 83, 230, 0.3);
+            flex-shrink: 0;
+        }
+
+        .module-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .module-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .module-overall-progress {
+            margin-bottom: 1.25rem;
+        }
+
+        .module-students-list {
+            max-height: 200px;
+            overflow-y: auto;
+        }
+
+        .module-student-item {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0.75rem 0;
+            border-bottom: 1px solid rgba(0, 0, 0, 0.05);
+        }
+
+        .module-student-item:last-child {
+            border-bottom: none;
+        }
+
+        .module-student-name {
+            font-size: 0.9rem;
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .module-student-progress {
+            font-size: 0.85rem;
+            font-weight: 700;
+            color: var(--blue);
+        }
+
+        /* Tabs Navigation */
+        .tabs-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            overflow: hidden;
+        }
+
+        .tabs-nav {
+            display: flex;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-bottom: 2px solid rgba(34, 83, 230, 0.1);
+            overflow-x: auto;
+        }
+
+        .tab-btn {
+            flex: 1;
+            min-width: 150px;
+            padding: 1rem 1.5rem;
+            background: transparent;
+            border: none;
+            border-bottom: 3px solid transparent;
+            color: var(--text-light);
+            font-size: 0.95rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 0.5rem;
+            font-family: var(--font-primary);
+        }
+
+        .tab-btn:hover {
+            background: rgba(34, 83, 230, 0.05);
+            color: var(--blue);
+        }
+
+        .tab-btn.active {
+            color: var(--blue);
+            border-bottom-color: var(--blue);
+            background: var(--white);
+        }
+
+        .tab-btn i {
+            font-size: 1.1rem;
+        }
+
+        .tab-content {
+            display: none;
+            padding: 2rem;
+            animation: fadeIn 0.3s ease;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+                transform: translateY(10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Home Tab - Date and Class Info */
+        .date-class-header {
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            color: var(--white);
+            padding: 1.5rem 2rem;
+            border-radius: 20px;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(34, 83, 230, 0.25);
+        }
+
+        .date-display {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1rem;
+        }
+
+        .date-icon {
+            width: 50px;
+            height: 50px;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .date-info h2 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.25rem;
+        }
+
+        .date-info p {
+            font-size: 1rem;
+            opacity: 0.9;
+        }
+
+        .class-today-badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            padding: 0.75rem 1.5rem;
+            border-radius: 20px;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        /* Attendance Summary Card */
+        .attendance-summary-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .attendance-summary-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .attendance-summary-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .attendance-summary-header h3 i {
+            color: var(--blue);
+        }
+
+        .attendance-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 1rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .attendance-stat-item {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 16px;
+            padding: 1.25rem;
+            text-align: center;
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .attendance-stat-item.present {
+            background: linear-gradient(135deg, rgba(0, 204, 133, 0.1), rgba(0, 204, 133, 0.05));
+            border-color: rgba(0, 204, 133, 0.2);
+        }
+
+        .attendance-stat-item.absent {
+            background: linear-gradient(135deg, rgba(255, 68, 68, 0.1), rgba(255, 68, 68, 0.05));
+            border-color: rgba(255, 68, 68, 0.2);
+        }
+
+        .attendance-stat-item.late {
+            background: linear-gradient(135deg, rgba(253, 208, 0, 0.1), rgba(253, 208, 0, 0.05));
+            border-color: rgba(253, 208, 0, 0.2);
+        }
+
+        .attendance-stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+            line-height: 1;
+            margin-bottom: 0.5rem;
+        }
+
+        .attendance-stat-item.present .attendance-stat-number {
+            color: var(--green);
+        }
+
+        .attendance-stat-item.absent .attendance-stat-number {
+            color: var(--red);
+        }
+
+        .attendance-stat-item.late .attendance-stat-number {
+            color: #b8860b;
+        }
+
+        .attendance-stat-label {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            font-weight: 600;
+        }
+
+        /* Location Status Section */
+        .location-status-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .location-status-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .location-status-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .location-status-header h3 i {
+            color: var(--blue);
+        }
+
+        .location-status-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .location-status-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 12px;
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            transition: var(--transition);
+        }
+
+        .location-status-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .location-status-icon {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            flex-shrink: 0;
+        }
+
+        .location-status-icon.at-class {
+            background: linear-gradient(135deg, var(--green), #00d99a);
+            color: var(--white);
+        }
+
+        .location-status-icon.coming {
+            background: linear-gradient(135deg, var(--yellow), #fbbf24);
+            color: var(--dark-blue);
+        }
+
+        .location-status-icon.not-coming {
+            background: linear-gradient(135deg, var(--red), #ff6b6b);
+            color: var(--white);
+        }
+
+        .location-status-icon.unknown {
+            background: linear-gradient(135deg, var(--text-light), #94a3b8);
+            color: var(--white);
+        }
+
+        .location-status-info {
+            flex: 1;
+        }
+
+        .location-status-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .location-status-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .location-status-badge {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+        }
+
+        .location-status-badge.at-class {
+            background: var(--light-green);
+            color: var(--green);
+        }
+
+        .location-status-badge.coming {
+            background: rgba(253, 208, 0, 0.2);
+            color: #b8860b;
+        }
+
+        .location-status-badge.not-coming {
+            background: rgba(255, 68, 68, 0.15);
+            color: var(--red);
+        }
+
+        .location-status-badge.unknown {
+            background: rgba(113, 128, 150, 0.15);
+            color: var(--text-light);
+        }
+
+        /* Attendance Access Control */
+        .attendance-access-card {
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            border-radius: 20px;
+            padding: 2rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 8px 30px rgba(34, 83, 230, 0.25);
+            color: var(--white);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .attendance-access-card::before {
+            content: '';
+            position: absolute;
+            top: -50%;
+            right: -20%;
+            width: 300px;
+            height: 300px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 50%;
+            filter: blur(40px);
+        }
+
+        .attendance-access-content {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 2rem;
+            position: relative;
+            z-index: 1;
+        }
+
+        .access-info {
+            flex: 1;
+        }
+
+        .access-info h3 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            margin-bottom: 0.5rem;
+        }
+
+        .access-info p {
+            font-size: 1rem;
+            opacity: 0.9;
+            margin-bottom: 1rem;
+        }
+
+        .access-status {
+            display: inline-flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.5rem 1rem;
+            background: rgba(255, 255, 255, 0.2);
+            backdrop-filter: blur(10px);
+            border-radius: 20px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+
+        .access-status.active {
+            background: rgba(0, 204, 133, 0.3);
+            border-color: rgba(0, 204, 133, 0.5);
+        }
+
+        .access-status.inactive {
+            background: rgba(255, 68, 68, 0.3);
+            border-color: rgba(255, 68, 68, 0.5);
+        }
+
+        .access-status i {
+            font-size: 1rem;
+        }
+
+        .toggle-attendance-btn {
+            padding: 1.25rem 2.5rem;
+            background: var(--white);
+            color: var(--blue);
+            border: none;
+            border-radius: 16px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+            transition: var(--transition);
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+            font-family: var(--font-primary);
+        }
+
+        .toggle-attendance-btn:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+        }
+
+        .toggle-attendance-btn.active {
+            background: var(--yellow);
+            color: var(--dark-blue);
+        }
+
+        .toggle-attendance-btn i {
+            font-size: 1.3rem;
+        }
+
+        /* Real-time Attendance Tab */
+        .attendance-list {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .attendance-list-item {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            transition: var(--transition);
+        }
+
+        .attendance-list-item:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .attendance-time {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            font-weight: 600;
+            min-width: 80px;
+        }
+
+        /* Attendance History Log */
+        .attendance-history-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-top: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .attendance-history-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+        }
+
+        .attendance-history-header h3 {
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .attendance-history-header h3 i {
+            color: var(--blue);
+        }
+
+        .history-filter {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .history-filter-btn {
+            padding: 0.5rem 1rem;
+            background: rgba(34, 83, 230, 0.1);
+            border: 2px solid rgba(34, 83, 230, 0.2);
+            border-radius: 10px;
+            color: var(--blue);
+            font-weight: 600;
+            cursor: pointer;
+            font-size: 0.85rem;
+            transition: var(--transition);
+        }
+
+        .history-filter-btn:hover {
+            background: rgba(34, 83, 230, 0.15);
+        }
+
+        .history-filter-btn.active {
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            color: var(--white);
+            border-color: transparent;
+        }
+
+        .history-log {
+            display: grid;
+            gap: 0.75rem;
+            max-height: 500px;
+            overflow-y: auto;
+        }
+
+        .history-log-item {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            padding: 1rem;
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 12px;
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            transition: var(--transition);
+        }
+
+        .history-log-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+        }
+
+        .history-date {
+            min-width: 100px;
+            text-align: center;
+            padding: 0.75rem;
+            background: var(--white);
+            border-radius: 10px;
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .history-date-day {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--blue);
+            line-height: 1;
+        }
+
+        .history-date-month {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 600;
+            text-transform: uppercase;
+            margin-top: 0.25rem;
+        }
+
+        .history-student-info {
+            flex: 1;
+        }
+
+        .history-student-info h4 {
+            font-size: 1rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .history-student-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .history-status {
+            padding: 0.5rem 1rem;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            min-width: 100px;
+            text-align: center;
+        }
+
+        .history-status.present {
+            background: var(--light-green);
+            color: var(--green);
+        }
+
+        .history-status.absent {
+            background: rgba(255, 68, 68, 0.15);
+            color: var(--red);
+        }
+
+        .history-status.late {
+            background: rgba(253, 208, 0, 0.2);
+            color: #b8860b;
+        }
+
+        .history-time {
+            font-size: 0.9rem;
+            color: var(--text-dark);
+            font-weight: 600;
+            min-width: 80px;
+            text-align: right;
+        }
+
+        /* Location Map Tab */
+        .map-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 0;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            height: 500px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        #studentMap {
+            width: 100%;
+            height: 100%;
+            border-radius: 20px;
+        }
+
+        .location-markers {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+            gap: 1rem;
+            margin-top: 2rem;
+        }
+
+        .location-marker-card {
+            background: var(--white);
+            border-radius: 16px;
+            padding: 1.25rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-wrap: wrap;
+                gap: 1rem;
+            }
+
+            .header-left {
+                flex: 1 1 100%;
+            }
+
+            .header-center {
+                flex: 1 1 auto;
+            }
+
+            .header-right {
+                flex: 0 0 auto;
+            }
+
+            .stats-overview {
+                grid-template-columns: 1fr;
+            }
+
+            .students-grid,
+            .modules-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .search-filter-container {
+                flex-direction: column;
+            }
+
+            .search-box {
+                min-width: 100%;
+            }
+
+            .student-stats {
+                grid-template-columns: repeat(3, 1fr);
+            }
+
+            .section-header {
+                flex-direction: column;
+                align-items: flex-start;
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Teacher Header -->
+    <header class="teacher-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <div class="logo-icon">
+                <i class="fas fa-chalkboard-teacher"></i>
+        </div>
+                    <div class="welcome-text">
+                        <h2>Teacher Dashboard</h2>
+                        <p class="student-name">Track Student Progress</p>
+            </div>
+                </div>
+                <div class="header-right">
+                    <a href="../../login.html" class="logout-btn-teacher">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                    <div class="profile-avatar">
+                        <i class="fas fa-user-tie"></i>
+        </div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Dashboard Content -->
+    <main class="teacher-dashboard">
+        <div class="container">
+            <!-- Tabs Container -->
+            <div class="tabs-container">
+                <!-- Tabs Navigation -->
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-tab="home">
+                        <i class="fas fa-home"></i>
+                        <span>Home</span>
+                    </button>
+                    <button class="tab-btn" data-tab="attendance">
+                        <i class="fas fa-calendar-check"></i>
+                        <span>Attendance</span>
+                    </button>
+                    <button class="tab-btn" data-tab="progress">
+                        <i class="fas fa-chart-line"></i>
+                        <span>Progress</span>
+                    </button>
+            </div>
+
+                <!-- Home Tab -->
+                <div class="tab-content active" id="home-tab">
+                    <!-- Date and Class Header -->
+                    <div class="date-class-header">
+                <div class="date-display">
+                            <div class="date-icon">
+                                <i class="fas fa-calendar"></i>
+                </div>
+                            <div class="date-info">
+                                <h2 id="currentDate">Monday, December 16, 2024</h2>
+                                <p id="currentTime">9:30 AM</p>
+            </div>
+                        </div>
+                        <div class="class-today-badge">
+                            <i class="fas fa-chalkboard"></i>
+                            <span>Class Today - English & Mathematics</span>
+                        </div>
+                    </div>
+
+                    <!-- Attendance Summary -->
+                    <div class="attendance-summary-card">
+                        <div class="attendance-summary-header">
+                            <h3>
+                                <i class="fas fa-clipboard-list"></i>
+                                Today's Attendance Summary
+                            </h3>
+                </div>
+                        <div class="attendance-stats-grid">
+                            <div class="attendance-stat-item present">
+                                <div class="attendance-stat-number">18</div>
+                                <div class="attendance-stat-label">
+                                    <i class="fas fa-check-circle"></i> Present
+                </div>
+            </div>
+                            <div class="attendance-stat-item absent">
+                                <div class="attendance-stat-number">4</div>
+                                <div class="attendance-stat-label">
+                                    <i class="fas fa-times-circle"></i> Absent
+                </div>
+                </div>
+                            <div class="attendance-stat-item late">
+                                <div class="attendance-stat-number">2</div>
+                                <div class="attendance-stat-label">
+                                    <i class="fas fa-clock"></i> Late
+            </div>
+                </div>
+                </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+            </div>
+                            <span class="progress-text">75% Attendance Rate (18/24)</span>
+                </div>
+                </div>
+
+                    <!-- Interactive Map -->
+                    <div class="map-container" style="margin-bottom: 2rem;">
+                        <div id="studentMap"></div>
+            </div>
+
+                    <!-- Location Status Section -->
+                    <div class="location-status-section">
+                        <div class="location-status-header">
+                            <h3>
+                                <i class="fas fa-map-marked-alt"></i>
+                                Student Location Status
+                            </h3>
+                </div>
+                        <div class="location-status-list">
+                            <div class="location-status-item">
+                                <div class="location-status-icon at-class">
+                                    <i class="fas fa-check"></i>
+            </div>
+                                <div class="location-status-info">
+                                    <h4>Ahmad Hassan</h4>
+                                    <p>At Class - Room 101</p>
+                </div>
+                                <span class="location-status-badge at-class">At Class</span>
+                </div>
+                            <div class="location-status-item">
+                                <div class="location-status-icon coming">
+                                    <i class="fas fa-walking"></i>
+            </div>
+                                <div class="location-status-info">
+                                    <h4>Siti Aminah</h4>
+                                    <p>200m away - Approaching</p>
+                </div>
+                                <span class="location-status-badge coming">Coming</span>
+                </div>
+                            <div class="location-status-item">
+                                <div class="location-status-icon coming">
+                                    <i class="fas fa-walking"></i>
+            </div>
+                                <div class="location-status-info">
+                                    <h4>Fatimah Nor</h4>
+                                    <p>500m away - On the way</p>
+                </div>
+                                <span class="location-status-badge coming">Coming</span>
+                </div>
+                            <div class="location-status-item">
+                                <div class="location-status-icon not-coming">
+                                    <i class="fas fa-home"></i>
+            </div>
+                                <div class="location-status-info">
+                                    <h4>Mohammad Razak</h4>
+                                    <p>At Home - Not coming</p>
+                                </div>
+                                <span class="location-status-badge not-coming">Not Coming</span>
+                            </div>
+                            <div class="location-status-item">
+                                <div class="location-status-icon at-class">
+                                    <i class="fas fa-check"></i>
+                                </div>
+                                <div class="location-status-info">
+                                    <h4>Ismail Saleh</h4>
+                                    <p>At Class - Room 101</p>
+                                </div>
+                                <span class="location-status-badge at-class">At Class</span>
+                            </div>
+                            <div class="location-status-item">
+                                <div class="location-status-icon unknown">
+                                    <i class="fas fa-question"></i>
+                                </div>
+                                <div class="location-status-info">
+                                    <h4>Razak Kamal</h4>
+                                    <p>Location unavailable</p>
+                                </div>
+                                <span class="location-status-badge unknown">Unknown</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Home Tab -->
+
+                <!-- Attendance Tab -->
+                <div class="tab-content" id="attendance-tab">
+                    <!-- Attendance Access Control -->
+                    <div class="attendance-access-card">
+                        <div class="attendance-access-content">
+                            <div class="access-info">
+                                <h3>
+                                    <i class="fas fa-rfid"></i>
+                                    Attendance Access Control
+                                </h3>
+                                <p>Enable or disable student card/band scanning for attendance</p>
+                                <div class="access-status inactive" id="accessStatus">
+                                    <i class="fas fa-times-circle"></i>
+                                    <span>Access Disabled</span>
+                                </div>
+                            </div>
+                            <button class="toggle-attendance-btn" id="toggleAttendanceBtn" onclick="toggleAttendanceAccess()">
+                                <i class="fas fa-power-off"></i>
+                                <span>Enable Access</span>
+                </button>
+            </div>
+            </div>
+
+                    <!-- Real-Time Attendance Tracking -->
+                    <div class="attendance-summary-card">
+                        <div class="attendance-summary-header">
+                            <h3>
+                                <i class="fas fa-calendar-check"></i>
+                                Real-Time Attendance Tracking
+                            </h3>
+                        </div>
+                        <div class="attendance-list" id="attendanceList">
+                            <div class="attendance-list-item">
+                                <div class="student-avatar">AH</div>
+                                <div class="student-info" style="flex: 1;">
+                                    <h3>Ahmad Hassan</h3>
+                                    <p>ID: STU001</p>
+                                </div>
+                                <div class="attendance-time">
+                                    <i class="fas fa-clock"></i>
+                                    8:15 AM
+                                </div>
+                                <span class="student-status active">Present</span>
+                            </div>
+                            <div class="attendance-list-item">
+                                <div class="student-avatar">SA</div>
+                                <div class="student-info" style="flex: 1;">
+                                    <h3>Siti Aminah</h3>
+                                    <p>ID: STU002</p>
+                                </div>
+                                <div class="attendance-time">
+                                    <i class="fas fa-clock"></i>
+                                    8:20 AM
+                                </div>
+                                <span class="student-status active">Present</span>
+                            </div>
+                            <div class="attendance-list-item">
+                                <div class="student-avatar">FN</div>
+                                <div class="student-info" style="flex: 1;">
+                                    <h3>Fatimah Nor</h3>
+                                    <p>ID: STU004</p>
+                                </div>
+                                <div class="attendance-time">
+                                    <i class="fas fa-clock"></i>
+                                    8:45 AM
+                                </div>
+                                <span class="student-status struggling">Late</span>
+                            </div>
+                            <div class="attendance-list-item">
+                                <div class="student-avatar">IS</div>
+                                <div class="student-info" style="flex: 1;">
+                                    <h3>Ismail Saleh</h3>
+                                    <p>ID: STU005</p>
+                                </div>
+                                <div class="attendance-time">
+                                    <i class="fas fa-clock"></i>
+                                    8:18 AM
+                                </div>
+                                <span class="student-status active">Present</span>
+                            </div>
+                            <div class="attendance-list-item">
+                                <div class="student-avatar">MR</div>
+                                <div class="student-info" style="flex: 1;">
+                                    <h3>Mohammad Razak</h3>
+                                    <p>ID: STU003</p>
+                                </div>
+                                <div class="attendance-time">
+                                    <i class="fas fa-times"></i>
+                                    -
+                                </div>
+                                <span class="student-status inactive">Absent</span>
+                            </div>
+                            <div class="attendance-list-item">
+                                <div class="student-avatar">RK</div>
+                                <div class="student-info" style="flex: 1;">
+                                    <h3>Razak Kamal</h3>
+                                    <p>ID: STU006</p>
+                                </div>
+                                <div class="attendance-time">
+                                    <i class="fas fa-times"></i>
+                                    -
+                                </div>
+                                <span class="student-status inactive">Absent</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Attendance History Log -->
+                    <div class="attendance-history-section">
+                        <div class="attendance-history-header">
+                            <h3>
+                                <i class="fas fa-history"></i>
+                                Attendance History Log
+                            </h3>
+                            <div class="history-filter">
+                                <button class="history-filter-btn active" data-filter="all">All</button>
+                                <button class="history-filter-btn" data-filter="today">Today</button>
+                                <button class="history-filter-btn" data-filter="week">This Week</button>
+                                <button class="history-filter-btn" data-filter="month">This Month</button>
+                            </div>
+                        </div>
+                        <div class="history-log" id="attendanceHistory">
+                            <!-- History Item 1 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">15</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Ahmad Hassan</h4>
+                                    <p>ID: STU001</p>
+                                </div>
+                                <div class="history-time">8:15 AM</div>
+                                <div class="history-status present">Present</div>
+                            </div>
+                            <!-- History Item 2 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">15</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Siti Aminah</h4>
+                                    <p>ID: STU002</p>
+                                </div>
+                                <div class="history-time">8:20 AM</div>
+                                <div class="history-status present">Present</div>
+                            </div>
+                            <!-- History Item 3 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">15</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Fatimah Nor</h4>
+                                    <p>ID: STU004</p>
+                                </div>
+                                <div class="history-time">8:45 AM</div>
+                                <div class="history-status late">Late</div>
+                            </div>
+                            <!-- History Item 4 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">15</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Mohammad Razak</h4>
+                                    <p>ID: STU003</p>
+                                </div>
+                                <div class="history-time">-</div>
+                                <div class="history-status absent">Absent</div>
+                            </div>
+                            <!-- History Item 5 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">14</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Ahmad Hassan</h4>
+                                    <p>ID: STU001</p>
+                                </div>
+                                <div class="history-time">8:10 AM</div>
+                                <div class="history-status present">Present</div>
+                            </div>
+                            <!-- History Item 6 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">14</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Siti Aminah</h4>
+                                    <p>ID: STU002</p>
+                                </div>
+                                <div class="history-time">8:18 AM</div>
+                                <div class="history-status present">Present</div>
+                            </div>
+                            <!-- History Item 7 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">14</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Ismail Saleh</h4>
+                                    <p>ID: STU005</p>
+                                </div>
+                                <div class="history-time">8:25 AM</div>
+                                <div class="history-status present">Present</div>
+                            </div>
+                            <!-- History Item 8 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">13</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Mohammad Razak</h4>
+                                    <p>ID: STU003</p>
+                                </div>
+                                <div class="history-time">-</div>
+                                <div class="history-status absent">Absent</div>
+                            </div>
+                            <!-- History Item 9 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">13</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Fatimah Nor</h4>
+                                    <p>ID: STU004</p>
+                                </div>
+                                <div class="history-time">8:30 AM</div>
+                                <div class="history-status late">Late</div>
+                            </div>
+                            <!-- History Item 10 -->
+                            <div class="history-log-item">
+                                <div class="history-date">
+                                    <div class="history-date-day">12</div>
+                                    <div class="history-date-month">Dec</div>
+                                </div>
+                                <div class="history-student-info">
+                                    <h4>Ahmad Hassan</h4>
+                                    <p>ID: STU001</p>
+                                </div>
+                                <div class="history-time">8:12 AM</div>
+                                <div class="history-status present">Present</div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Attendance Tab -->
+
+                <!-- Progress Tab -->
+                <div class="tab-content" id="progress-tab">
+                    <div class="search-filter-section">
+                        <div class="search-filter-container">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search students by name..." id="studentSearchProgress">
+                            </div>
+                            <button class="filter-btn active" data-filter="all">
+                                <i class="fas fa-list"></i>
+                                <span>All Students</span>
+                            </button>
+                            <button class="filter-btn" data-filter="active">
+                                <i class="fas fa-user-check"></i>
+                                <span>Active</span>
+                            </button>
+                            <button class="filter-btn" data-filter="struggling">
+                                <i class="fas fa-exclamation-triangle"></i>
+                                <span>Need Help</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <!-- Student Progress Tracker -->
+                    <div class="students-list-section">
+            <div class="section-header">
+                            <h2>
+                                <i class="fas fa-user-graduate"></i>
+                                Student Progress Tracking
+                            </h2>
+            </div>
+                        <div class="students-grid" id="studentsGrid">
+                    <!-- Student Card 1 -->
+                    <div class="student-card" data-status="active">
+                        <div class="student-card-header">
+                            <div class="student-avatar">AH</div>
+                        <div class="student-info">
+                                <h3>Ahmad Hassan</h3>
+                                <p>ID: STU001</p>
+                        </div>
+                            <span class="student-status active">Active</span>
+                    </div>
+                        <div class="progress-summary">
+                        <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-book"></i> Modules Progress</span>
+                                    <span class="progress-percentage">75%</span>
+                                </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 75%"></div>
+                                </div>
+                        </div>
+                        <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-tasks"></i> Exercises Completed</span>
+                                    <span class="progress-percentage">68%</span>
+                        </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 68%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">9/12</div>
+                                <div class="mini-stat-label">Modules</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">34/50</div>
+                                <div class="mini-stat-label">Exercises</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">1,250</div>
+                                <div class="mini-stat-label">XP Points</div>
+                            </div>
+                        </div>
+                        <button class="view-details-btn" onclick="viewStudentDetails('AH')">
+                            <i class="fas fa-eye"></i>
+                            <span>View Full Progress</span>
+                        </button>
+                    </div>
+
+                    <!-- Student Card 2 -->
+                    <div class="student-card" data-status="active">
+                        <div class="student-card-header">
+                            <div class="student-avatar">SA</div>
+                            <div class="student-info">
+                                <h3>Siti Aminah</h3>
+                                <p>ID: STU002</p>
+                            </div>
+                            <span class="student-status active">Active</span>
+                        </div>
+                        <div class="progress-summary">
+                        <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-book"></i> Modules Progress</span>
+                                    <span class="progress-percentage">92%</span>
+                        </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 92%"></div>
+                    </div>
+                    </div>
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-tasks"></i> Exercises Completed</span>
+                                    <span class="progress-percentage">88%</span>
+                                </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 88%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">11/12</div>
+                                <div class="mini-stat-label">Modules</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">44/50</div>
+                                <div class="mini-stat-label">Exercises</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">2,180</div>
+                                <div class="mini-stat-label">XP Points</div>
+                            </div>
+                        </div>
+                        <button class="view-details-btn" onclick="viewStudentDetails('SA')">
+                            <i class="fas fa-eye"></i>
+                            <span>View Full Progress</span>
+                        </button>
+                </div>
+
+                    <!-- Student Card 3 -->
+                    <div class="student-card" data-status="struggling">
+                        <div class="student-card-header">
+                            <div class="student-avatar">MR</div>
+                        <div class="student-info">
+                                <h3>Mohammad Razak</h3>
+                                <p>ID: STU003</p>
+                        </div>
+                            <span class="student-status struggling">Need Help</span>
+                    </div>
+                        <div class="progress-summary">
+                        <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-book"></i> Modules Progress</span>
+                                    <span class="progress-percentage">35%</span>
+                                </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 35%"></div>
+                                </div>
+                        </div>
+                        <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-tasks"></i> Exercises Completed</span>
+                                    <span class="progress-percentage">28%</span>
+                        </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 28%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">4/12</div>
+                                <div class="mini-stat-label">Modules</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">14/50</div>
+                                <div class="mini-stat-label">Exercises</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">520</div>
+                                <div class="mini-stat-label">XP Points</div>
+                            </div>
+                        </div>
+                        <button class="view-details-btn" onclick="viewStudentDetails('MR')">
+                            <i class="fas fa-eye"></i>
+                            <span>View Full Progress</span>
+                        </button>
+                    </div>
+
+                    <!-- Student Card 4 -->
+                    <div class="student-card" data-status="active">
+                        <div class="student-card-header">
+                            <div class="student-avatar">FN</div>
+                            <div class="student-info">
+                                <h3>Fatimah Nor</h3>
+                                <p>ID: STU004</p>
+                            </div>
+                            <span class="student-status active">Active</span>
+                        </div>
+                        <div class="progress-summary">
+                        <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-book"></i> Modules Progress</span>
+                                    <span class="progress-percentage">83%</span>
+                        </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 83%"></div>
+                    </div>
+                    </div>
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-tasks"></i> Exercises Completed</span>
+                                    <span class="progress-percentage">76%</span>
+                                </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 76%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">10/12</div>
+                                <div class="mini-stat-label">Modules</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">38/50</div>
+                                <div class="mini-stat-label">Exercises</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">1,890</div>
+                                <div class="mini-stat-label">XP Points</div>
+                            </div>
+                        </div>
+                        <button class="view-details-btn" onclick="viewStudentDetails('FN')">
+                            <i class="fas fa-eye"></i>
+                            <span>View Full Progress</span>
+                        </button>
+                </div>
+
+                    <!-- Student Card 5 -->
+                    <div class="student-card" data-status="active">
+                        <div class="student-card-header">
+                            <div class="student-avatar">IS</div>
+                        <div class="student-info">
+                                <h3>Ismail Saleh</h3>
+                                <p>ID: STU005</p>
+                        </div>
+                            <span class="student-status active">Active</span>
+                    </div>
+                        <div class="progress-summary">
+                        <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-book"></i> Modules Progress</span>
+                                    <span class="progress-percentage">58%</span>
+                                </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 58%"></div>
+                                </div>
+                        </div>
+                        <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-tasks"></i> Exercises Completed</span>
+                                    <span class="progress-percentage">52%</span>
+                        </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 52%"></div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="student-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">7/12</div>
+                                <div class="mini-stat-label">Modules</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">26/50</div>
+                                <div class="mini-stat-label">Exercises</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">980</div>
+                                <div class="mini-stat-label">XP Points</div>
+                            </div>
+                        </div>
+                        <button class="view-details-btn" onclick="viewStudentDetails('IS')">
+                            <i class="fas fa-eye"></i>
+                            <span>View Full Progress</span>
+                        </button>
+                    </div>
+
+                    <!-- Student Card 6 -->
+                    <div class="student-card" data-status="inactive">
+                        <div class="student-card-header">
+                            <div class="student-avatar">RK</div>
+                            <div class="student-info">
+                                <h3>Razak Kamal</h3>
+                                <p>ID: STU006</p>
+                            </div>
+                            <span class="student-status inactive">Inactive</span>
+                        </div>
+                        <div class="progress-summary">
+                        <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-book"></i> Modules Progress</span>
+                                    <span class="progress-percentage">42%</span>
+                        </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 42%"></div>
+                    </div>
+                    </div>
+                            <div class="progress-item">
+                                <div class="progress-label">
+                                    <span><i class="fas fa-tasks"></i> Exercises Completed</span>
+                                    <span class="progress-percentage">36%</span>
+                </div>
+                                <div class="progress-bar-small">
+                                    <div class="progress-fill-small" style="width: 36%"></div>
+            </div>
+                            </div>
+                        </div>
+                        <div class="student-stats">
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">5/12</div>
+                                <div class="mini-stat-label">Modules</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">18/50</div>
+                                <div class="mini-stat-label">Exercises</div>
+                            </div>
+                            <div class="mini-stat">
+                                <div class="mini-stat-number">650</div>
+                                <div class="mini-stat-label">XP Points</div>
+                            </div>
+                        </div>
+                        <button class="view-details-btn" onclick="viewStudentDetails('RK')">
+                            <i class="fas fa-eye"></i>
+                            <span>View Full Progress</span>
+                        </button>
+                    </div>
+                </div>
+                    </div>
+
+                    <!-- Modules Progress Section -->
+                    <div class="modules-progress-section">
+                        <div class="section-header">
+                            <h2>
+                                <i class="fas fa-book-open"></i>
+                                Module Completion Overview
+                            </h2>
+                        </div>
+                        <div class="modules-grid">
+                            <!-- Module Card 1 -->
+                            <div class="module-progress-card">
+                                <div class="module-header">
+                                    <div class="module-icon">
+                                        <i class="fas fa-book"></i>
+                    </div>
+                                    <div class="module-info">
+                                        <h3>English Basics</h3>
+                                        <p>Module 1 - Fundamentals</p>
+                </div>
+                        </div>
+                                <div class="module-overall-progress">
+                                    <div class="progress-label">
+                                        <span>Overall Completion</span>
+                                        <span class="progress-percentage">78%</span>
+                    </div>
+                                    <div class="progress-bar-small">
+                                        <div class="progress-fill-small" style="width: 78%"></div>
+                </div>
+            </div>
+                                <div class="module-students-list">
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Ahmad Hassan</span>
+                                        <span class="module-student-progress">85%</span>
+                                    </div>
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Siti Aminah</span>
+                                        <span class="module-student-progress">95%</span>
+                                    </div>
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Fatimah Nor</span>
+                                        <span class="module-student-progress">90%</span>
+                                    </div>
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Mohammad Razak</span>
+                                        <span class="module-student-progress">40%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Module Card 2 -->
+                            <div class="module-progress-card">
+                                <div class="module-header">
+                                    <div class="module-icon">
+                                        <i class="fas fa-calculator"></i>
+                                    </div>
+                                    <div class="module-info">
+                                        <h3>Mathematics Fundamentals</h3>
+                                        <p>Module 2 - Basic Math</p>
+                                    </div>
+                                </div>
+                                <div class="module-overall-progress">
+                                    <div class="progress-label">
+                                        <span>Overall Completion</span>
+                                        <span class="progress-percentage">65%</span>
+                                    </div>
+                                    <div class="progress-bar-small">
+                                        <div class="progress-fill-small" style="width: 65%"></div>
+                                    </div>
+                                </div>
+                                <div class="module-students-list">
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Ahmad Hassan</span>
+                                        <span class="module-student-progress">70%</span>
+                                    </div>
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Siti Aminah</span>
+                                        <span class="module-student-progress">88%</span>
+                                    </div>
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Ismail Saleh</span>
+                                        <span class="module-student-progress">55%</span>
+                                    </div>
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Mohammad Razak</span>
+                                        <span class="module-student-progress">30%</span>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- Module Card 3 -->
+                            <div class="module-progress-card">
+                                <div class="module-header">
+                                    <div class="module-icon">
+                                        <i class="fas fa-language"></i>
+                                    </div>
+                                    <div class="module-info">
+                                        <h3>Grammar Essentials</h3>
+                                        <p>Module 3 - Language Skills</p>
+                                    </div>
+                                </div>
+                                <div class="module-overall-progress">
+                                    <div class="progress-label">
+                                        <span>Overall Completion</span>
+                                        <span class="progress-percentage">72%</span>
+                                    </div>
+                                    <div class="progress-bar-small">
+                                        <div class="progress-fill-small" style="width: 72%"></div>
+                                    </div>
+                                </div>
+                                <div class="module-students-list">
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Ahmad Hassan</span>
+                                        <span class="module-student-progress">80%</span>
+                                    </div>
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Fatimah Nor</span>
+                                        <span class="module-student-progress">85%</span>
+                                    </div>
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Siti Aminah</span>
+                                        <span class="module-student-progress">92%</span>
+                                    </div>
+                                    <div class="module-student-item">
+                                        <span class="module-student-name">Ismail Saleh</span>
+                                        <span class="module-student-progress">60%</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- End Progress Tab -->
+            </div>
+            <!-- End Tabs Container -->
+        </div>
+    </main>
+
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <script src="../../js/teacher.js"></script>
+    <script>
+        // Search functionality for Progress tab
+        const studentSearchProgress = document.getElementById('studentSearchProgress');
+        if (studentSearchProgress) {
+            studentSearchProgress.addEventListener('input', function(e) {
+                const searchTerm = e.target.value.toLowerCase();
+                const studentCards = document.querySelectorAll('#studentsGrid .student-card');
+                
+                studentCards.forEach(card => {
+                    const studentName = card.querySelector('.student-info h3')?.textContent.toLowerCase() || '';
+                    const studentId = card.querySelector('.student-info p')?.textContent.toLowerCase() || '';
+                    
+                    if (studentName.includes(searchTerm) || studentId.includes(searchTerm)) {
+                        card.style.display = 'block';
+                    } else {
+                        card.style.display = 'none';
+                    }
+                });
+            });
+        }
+
+        // Filter functionality for Progress tab
+        const progressTab = document.getElementById('progress-tab');
+        if (progressTab) {
+            const filterButtons = progressTab.querySelectorAll('.filter-btn');
+            filterButtons.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all filter buttons in this tab
+                    filterButtons.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    const studentCards = progressTab.querySelectorAll('#studentsGrid .student-card');
+                    
+                    studentCards.forEach(card => {
+                        const status = card.dataset.status;
+                        
+                        if (filter === 'all') {
+                            card.style.display = 'block';
+                        } else if (filter === 'active' && status === 'active') {
+                            card.style.display = 'block';
+                        } else if (filter === 'struggling' && status === 'struggling') {
+                            card.style.display = 'block';
+                        } else {
+                            card.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        }
+
+        // View student details function
+        function viewStudentDetails(studentId) {
+            // This would typically navigate to a detailed student page
+            alert(`Viewing detailed progress for student: ${studentId}`);
+            // window.location.href = `student-details.html?id=${studentId}`;
+        }
+
+        // Toggle Attendance Access Function
+        let attendanceAccessEnabled = false;
+        function toggleAttendanceAccess() {
+            const btn = document.getElementById('toggleAttendanceBtn');
+            const status = document.getElementById('accessStatus');
+            
+            attendanceAccessEnabled = !attendanceAccessEnabled;
+            
+            if (attendanceAccessEnabled) {
+                btn.innerHTML = '<i class="fas fa-power-off"></i><span>Disable Access</span>';
+                btn.classList.add('active');
+                status.innerHTML = '<i class="fas fa-check-circle"></i><span>Access Enabled</span>';
+                status.classList.remove('inactive');
+                status.classList.add('active');
+                
+                // Show notification
+                alert('Attendance access enabled! Students can now tap their cards/bands to mark attendance.');
+            } else {
+                btn.innerHTML = '<i class="fas fa-power-off"></i><span>Enable Access</span>';
+                btn.classList.remove('active');
+                status.innerHTML = '<i class="fas fa-times-circle"></i><span>Access Disabled</span>';
+                status.classList.remove('active');
+                status.classList.add('inactive');
+                
+                // Show notification
+                alert('Attendance access disabled. Students cannot mark attendance at this time.');
+            }
+        }
+
+        // Attendance History Filter Functionality
+        document.addEventListener('DOMContentLoaded', function() {
+            const historyFilterBtns = document.querySelectorAll('.history-filter-btn');
+            const historyItems = document.querySelectorAll('.history-log-item');
+            
+            historyFilterBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    // Remove active class from all buttons
+                    historyFilterBtns.forEach(b => b.classList.remove('active'));
+                    // Add active class to clicked button
+                    this.classList.add('active');
+                    
+                    const filter = this.dataset.filter;
+                    const today = new Date();
+                    const currentDate = today.getDate();
+                    const currentMonth = today.getMonth();
+                    const currentYear = today.getFullYear();
+                    
+                    historyItems.forEach(item => {
+                        const dateDay = parseInt(item.querySelector('.history-date-day').textContent);
+                        const dateMonth = item.querySelector('.history-date-month').textContent;
+                        
+                        // Map month names to numbers (Dec = 11, Nov = 10, etc.)
+                        const monthMap = {
+                            'Jan': 0, 'Feb': 1, 'Mar': 2, 'Apr': 3, 'May': 4, 'Jun': 5,
+                            'Jul': 6, 'Aug': 7, 'Sep': 8, 'Oct': 9, 'Nov': 10, 'Dec': 11
+                        };
+                        const itemMonth = monthMap[dateMonth];
+                        
+                        let showItem = false;
+                        
+                        if (filter === 'all') {
+                            showItem = true;
+                        } else if (filter === 'today') {
+                            showItem = (dateDay === currentDate && itemMonth === currentMonth);
+                        } else if (filter === 'week') {
+                            // Show items from the last 7 days
+                            const itemDate = new Date(currentYear, itemMonth, dateDay);
+                            const daysDiff = Math.floor((today - itemDate) / (1000 * 60 * 60 * 24));
+                            showItem = (daysDiff >= 0 && daysDiff <= 7);
+                        } else if (filter === 'month') {
+                            showItem = (itemMonth === currentMonth && currentYear === currentYear);
+                        }
+                        
+                        item.style.display = showItem ? 'flex' : 'none';
+                    });
+                });
+            });
+        });
+
+        // Tab switching functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+                
+                // Remove active class from all tabs and buttons
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding tab
+                this.classList.add('active');
+                document.getElementById(`${targetTab}-tab`).classList.add('active');
+            });
+        });
+
+        // Update date and time
+        function updateDateTime() {
+            const now = new Date();
+            const options = { weekday: 'long', year: 'numeric', month: 'long', day: 'numeric' };
+            const dateString = now.toLocaleDateString('en-US', options);
+            const timeString = now.toLocaleTimeString('en-US', { hour: '2-digit', minute: '2-digit' });
+            
+            const dateElement = document.getElementById('currentDate');
+            const timeElement = document.getElementById('currentTime');
+            
+            if (dateElement) dateElement.textContent = dateString;
+            if (timeElement) timeElement.textContent = timeString;
+        }
+
+        // Update date/time on load and every minute
+        updateDateTime();
+        setInterval(updateDateTime, 60000);
+
+        // Initialize Student Location Map
+        function initializeStudentMap() {
+            // Initialize map centered on Gerik, Perak, Malaysia
+            const schoolLat = 5.4167;   // Gerik, Perak latitude
+            const schoolLng = 101.1333; // Gerik, Perak longitude
+            const map = L.map('studentMap').setView([schoolLat, schoolLng], 14); // Zoom level 14 for rural area view
+            
+            // Add OpenStreetMap tiles
+            L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+                attribution: '© OpenStreetMap contributors',
+                maxZoom: 19
+            }).addTo(map);
+
+            // Student location data with coordinates relative to rural school location
+            const studentLocations = [
+                {
+                    name: 'Ahmad Hassan',
+                    id: 'STU001',
+                    lat: schoolLat,  // At school
+                    lng: schoolLng,
+                    status: 'at-class',
+                    location: 'Room 101, Building A',
+                    icon: 'check',
+                    color: '#00cc85'
+                },
+                {
+                    name: 'Siti Aminah',
+                    id: 'STU002',
+                    lat: schoolLat + 0.002,  // ~200m away
+                    lng: schoolLng + 0.002,
+                    status: 'coming',
+                    location: '200m away - Approaching from village',
+                    icon: 'walking',
+                    color: '#fdd000'
+                },
+                {
+                    name: 'Fatimah Nor',
+                    id: 'STU004',
+                    lat: schoolLat + 0.005,  // ~500m away
+                    lng: schoolLng + 0.003,
+                    status: 'coming',
+                    location: '500m away - On the way from farm area',
+                    icon: 'walking',
+                    color: '#fdd000'
+                },
+                {
+                    name: 'Mohammad Razak',
+                    id: 'STU003',
+                    lat: schoolLat + 0.015,  // ~1.5km away at home
+                    lng: schoolLng + 0.010,
+                    status: 'not-coming',
+                    location: 'At Home - Village area, Not coming today',
+                    icon: 'home',
+                    color: '#ff4444'
+                },
+                {
+                    name: 'Ismail Saleh',
+                    id: 'STU005',
+                    lat: schoolLat,  // At school
+                    lng: schoolLng,
+                    status: 'at-class',
+                    location: 'Room 101, Building A',
+                    icon: 'check',
+                    color: '#00cc85'
+                },
+                {
+                    name: 'Razak Kamal',
+                    id: 'STU006',
+                    lat: null,
+                    lng: null,
+                    status: 'unknown',
+                    location: 'Location unavailable',
+                    icon: 'question',
+                    color: '#718096'
+                }
+            ];
+
+            // Create custom icon function
+            function createCustomIcon(color, iconType) {
+                const iconMap = {
+                    'check': '✓',
+                    'walking': '→',
+                    'home': '⌂',
+                    'question': '?'
+                };
+
+                return L.divIcon({
+                    className: 'custom-marker',
+                    html: `<div style="
+                        background-color: ${color};
+                        width: 40px;
+                        height: 40px;
+                        border-radius: 50%;
+                        display: flex;
+                        align-items: center;
+                        justify-content: center;
+                        color: white;
+                        font-weight: bold;
+                        font-size: 18px;
+                        border: 3px solid white;
+                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
+                    ">${iconMap[iconType] || '?'}</div>`,
+                    iconSize: [40, 40],
+                    iconAnchor: [20, 40],
+                    popupAnchor: [0, -40]
+                });
+            }
+
+            // Add markers for each student
+            studentLocations.forEach(student => {
+                if (student.lat && student.lng) {
+                    const marker = L.marker([student.lat, student.lng], {
+                        icon: createCustomIcon(student.color, student.icon)
+                    }).addTo(map);
+
+                    // Add popup with student information
+                    marker.bindPopup(`
+                        <div style="text-align: center; min-width: 200px;">
+                            <h3 style="margin: 0 0 10px 0; color: ${student.color}; font-size: 1.1rem;">${student.name}</h3>
+                            <p style="margin: 5px 0; color: #666; font-size: 0.9rem;"><strong>ID:</strong> ${student.id}</p>
+                            <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">${student.location}</p>
+                            <span style="
+                                display: inline-block;
+                                padding: 5px 12px;
+                                border-radius: 15px;
+                                background: ${student.color}20;
+                                color: ${student.color};
+                                font-size: 0.85rem;
+                                font-weight: 600;
+                                margin-top: 8px;
+                            ">
+                                ${student.status === 'at-class' ? 'At Class' : 
+                                  student.status === 'coming' ? 'Coming' : 
+                                  student.status === 'not-coming' ? 'Not Coming' : 'Unknown'}
+                            </span>
+                        </div>
+                    `);
+                }
+            });
+
+            // Add school/class location marker (larger, different style)
+            const schoolIcon = L.divIcon({
+                className: 'school-marker',
+                html: `<div style="
+                    background: linear-gradient(135deg, #2253e6, #00cc85);
+                    width: 50px;
+                    height: 50px;
+                    border-radius: 50%;
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+                    color: white;
+                    font-size: 24px;
+                    border: 4px solid white;
+                    box-shadow: 0 4px 12px rgba(34,83,230,0.4);
+                ">🏫</div>`,
+                iconSize: [50, 50],
+                iconAnchor: [25, 50],
+                popupAnchor: [0, -50]
+            });
+
+            const schoolMarker = L.marker([schoolLat, schoolLng], { icon: schoolIcon }).addTo(map);
+            schoolMarker.bindPopup('<strong>Rural School/Campus</strong><br>Main Building<br>Community Learning Center');
+
+            return map;
+        }
+
+        // Initialize map when page loads
+        document.addEventListener('DOMContentLoaded', function() {
+            // Initialize map
+            if (document.getElementById('studentMap')) {
+                initializeStudentMap();
+            }
+
+            // Animate progress bars on load
+            const progressBars = document.querySelectorAll('.progress-fill-small');
+            progressBars.forEach(bar => {
+                const width = bar.style.width;
+                bar.style.width = '0%';
+                setTimeout(() => {
+                    bar.style.transition = 'width 1s ease';
+                    bar.style.width = width;
+                }, 300);
+            });
+        });
+    </script>
+</body>
+</html>
+

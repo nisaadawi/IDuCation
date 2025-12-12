@@ -1,0 +1,1490 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>IDuCation - Admin Dashboard</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <style>
+        /* Admin Dashboard Specific Styles */
+        .admin-header {
+            background: linear-gradient(135deg, var(--dark-blue), var(--blue));
+            color: var(--white);
+            padding: 1.5rem 0;
+            position: sticky;
+            top: 0;
+            z-index: 1000;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        .admin-header .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+        }
+
+        .header-left h1 {
+            font-family: var(--font-heading);
+            font-size: 1.8rem;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .header-left h1 i {
+            font-size: 2rem;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 1.5rem;
+        }
+
+        .logout-btn-admin {
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            padding: 0.75rem 1.25rem;
+            background: rgba(239, 68, 68, 0.2);
+            border: 2px solid rgba(239, 68, 68, 0.3);
+            border-radius: 12px;
+            color: var(--white);
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 0.95rem;
+            transition: all 0.3s ease;
+        }
+
+        .logout-btn-admin:hover {
+            background: rgba(239, 68, 68, 0.3);
+            border-color: rgba(239, 68, 68, 0.5);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px rgba(239, 68, 68, 0.3);
+        }
+
+        .logout-btn-admin i {
+            font-size: 1rem;
+        }
+
+        .admin-stats {
+            display: flex;
+            gap: 1.5rem;
+            align-items: center;
+        }
+
+        .admin-stat {
+            text-align: center;
+            padding: 0.75rem 1.25rem;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(10px);
+            border-radius: 12px;
+            border: 2px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .admin-stat-number {
+            font-size: 1.8rem;
+            font-weight: 800;
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .admin-stat-label {
+            font-size: 0.85rem;
+            opacity: 0.9;
+            font-weight: 500;
+        }
+
+        .admin-profile {
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--green), var(--light-blue));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.3rem;
+            font-weight: 700;
+            border: 3px solid rgba(255, 255, 255, 0.3);
+            cursor: pointer;
+            transition: var(--transition);
+        }
+
+        .admin-profile:hover {
+            transform: scale(1.1);
+        }
+
+        .admin-dashboard {
+            padding: 2rem 0;
+            background: linear-gradient(180deg, #f0f9ff 0%, #e0f2fe 100%);
+            min-height: calc(100vh - 120px);
+        }
+
+        .admin-dashboard .container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 16px;
+        }
+
+        /* Tabs Navigation */
+        .tabs-container {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .tabs-nav {
+            display: flex;
+            gap: 0.75rem;
+            flex-wrap: wrap;
+            border-bottom: 2px solid rgba(34, 83, 230, 0.1);
+            padding-bottom: 1rem;
+            margin-bottom: 2rem;
+        }
+
+        .tab-btn {
+            padding: 0.875rem 1.75rem;
+            background: transparent;
+            border: 2px solid rgba(34, 83, 230, 0.2);
+            border-radius: 12px;
+            color: var(--text-dark);
+            font-weight: 600;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+            font-family: var(--font-primary);
+        }
+
+        .tab-btn:hover {
+            background: rgba(34, 83, 230, 0.1);
+            border-color: rgba(34, 83, 230, 0.3);
+        }
+
+        .tab-btn.active {
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            color: var(--white);
+            border-color: transparent;
+            box-shadow: 0 4px 15px rgba(34, 83, 230, 0.3);
+        }
+
+        .tab-content {
+            display: none;
+        }
+
+        .tab-content.active {
+            display: block;
+        }
+
+        /* Module Management Styles */
+        .module-management-section {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 2rem;
+            margin-bottom: 2rem;
+        }
+
+        .module-list-card, .module-form-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .card-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.5rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .card-header h3 {
+            font-family: var(--font-heading);
+            font-size: 1.5rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.75rem;
+        }
+
+        .card-header h3 i {
+            color: var(--blue);
+            font-size: 1.3rem;
+        }
+
+        .module-item {
+            background: linear-gradient(135deg, #f0f9ff, #e0f2fe);
+            border-radius: 12px;
+            padding: 1rem;
+            margin-bottom: 1rem;
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            transition: var(--transition);
+            cursor: pointer;
+        }
+
+        .module-item:hover {
+            transform: translateX(5px);
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            border-color: var(--blue);
+        }
+
+        .module-item-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 0.5rem;
+        }
+
+        .module-item-title {
+            font-size: 1.1rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .module-item-title i {
+            color: var(--blue);
+        }
+
+        .module-item-actions {
+            display: flex;
+            gap: 0.5rem;
+        }
+
+        .action-btn {
+            padding: 0.4rem 0.8rem;
+            border: none;
+            border-radius: 8px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.25rem;
+        }
+
+        .action-btn.edit {
+            background: rgba(253, 208, 0, 0.2);
+            color: #b8860b;
+        }
+
+        .action-btn.edit:hover {
+            background: rgba(253, 208, 0, 0.3);
+        }
+
+        .action-btn.delete {
+            background: rgba(255, 68, 68, 0.15);
+            color: var(--red);
+        }
+
+        .action-btn.delete:hover {
+            background: rgba(255, 68, 68, 0.25);
+        }
+
+        .module-item-meta {
+            font-size: 0.85rem;
+            color: var(--text-light);
+            margin-bottom: 0.5rem;
+        }
+
+        .module-item-stats {
+            display: flex;
+            gap: 1rem;
+            font-size: 0.85rem;
+            color: var(--text-dark);
+        }
+
+        .form-group {
+            margin-bottom: 1.25rem;
+        }
+
+        .form-group label {
+            display: block;
+            font-weight: 600;
+            color: var(--dark-blue);
+            margin-bottom: 0.5rem;
+            font-size: 0.95rem;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 0.875rem;
+            border: 2px solid rgba(34, 83, 230, 0.2);
+            border-radius: 10px;
+            font-family: var(--font-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(34, 83, 230, 0.1);
+        }
+
+        .form-group textarea {
+            min-height: 100px;
+            resize: vertical;
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 1rem;
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            color: var(--white);
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: var(--transition);
+            font-family: var(--font-primary);
+        }
+
+        .submit-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(34, 83, 230, 0.3);
+        }
+
+        /* Region Progress Styles */
+        .region-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 1.5rem;
+            margin-bottom: 2rem;
+        }
+
+        .region-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            transition: var(--transition);
+        }
+
+        .region-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .region-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 1.25rem;
+        }
+
+        .region-name {
+            font-size: 1.3rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .region-name i {
+            color: var(--blue);
+        }
+
+        .region-progress-overall {
+            margin-bottom: 1.5rem;
+        }
+
+        .progress-label {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 0.5rem;
+        }
+
+        .progress-label span {
+            font-weight: 600;
+            color: var(--text-dark);
+        }
+
+        .progress-percentage {
+            font-weight: 700;
+            color: var(--blue);
+            font-size: 1.1rem;
+        }
+
+        .progress-bar {
+            height: 12px;
+            background: rgba(34, 83, 230, 0.1);
+            border-radius: 10px;
+            overflow: hidden;
+        }
+
+        .progress-fill {
+            height: 100%;
+            background: linear-gradient(90deg, var(--blue), var(--green));
+            border-radius: 10px;
+            transition: width 0.3s ease;
+        }
+
+        .region-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .region-stat {
+            text-align: center;
+        }
+
+        .region-stat-number {
+            font-size: 1.5rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .region-stat-label {
+            font-size: 0.8rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        /* Individual Progress Styles */
+        .progress-search-section {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            margin-bottom: 2rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .search-filter-container {
+            display: flex;
+            gap: 1rem;
+            flex-wrap: wrap;
+            align-items: center;
+        }
+
+        .search-box {
+            flex: 1;
+            min-width: 300px;
+            position: relative;
+        }
+
+        .search-box i {
+            position: absolute;
+            left: 1rem;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-light);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 0.875rem 1rem 0.875rem 3rem;
+            border: 2px solid rgba(34, 83, 230, 0.2);
+            border-radius: 12px;
+            font-family: var(--font-primary);
+            font-size: 0.95rem;
+            transition: var(--transition);
+        }
+
+        .search-box input:focus {
+            outline: none;
+            border-color: var(--blue);
+            box-shadow: 0 0 0 3px rgba(34, 83, 230, 0.1);
+        }
+
+        .filter-btn {
+            padding: 0.875rem 1.5rem;
+            background: rgba(34, 83, 230, 0.1);
+            border: 2px solid rgba(34, 83, 230, 0.2);
+            border-radius: 12px;
+            color: var(--blue);
+            font-weight: 600;
+            cursor: pointer;
+            transition: var(--transition);
+            display: flex;
+            align-items: center;
+            gap: 0.5rem;
+        }
+
+        .filter-btn:hover {
+            background: rgba(34, 83, 230, 0.15);
+        }
+
+        .filter-btn.active {
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            color: var(--white);
+            border-color: transparent;
+        }
+
+        .individual-progress-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 1.5rem;
+        }
+
+        .individual-card {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 1.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            border: 2px solid rgba(34, 83, 230, 0.1);
+            transition: var(--transition);
+        }
+
+        .individual-card:hover {
+            transform: translateY(-4px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .individual-header {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            margin-bottom: 1.25rem;
+            padding-bottom: 1rem;
+            border-bottom: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .individual-avatar {
+            width: 60px;
+            height: 60px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--blue), var(--green));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--white);
+            font-size: 1.5rem;
+            font-weight: 700;
+            flex-shrink: 0;
+        }
+
+        .individual-info h3 {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--dark-blue);
+            margin-bottom: 0.25rem;
+        }
+
+        .individual-info p {
+            font-size: 0.85rem;
+            color: var(--text-light);
+        }
+
+        .individual-region {
+            margin-left: auto;
+            padding: 0.4rem 0.8rem;
+            background: rgba(34, 83, 230, 0.1);
+            border-radius: 20px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            color: var(--blue);
+        }
+
+        .individual-progress-item {
+            margin-bottom: 1rem;
+        }
+
+        .individual-stats {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 1rem;
+            margin-top: 1rem;
+            padding-top: 1rem;
+            border-top: 2px solid rgba(34, 83, 230, 0.1);
+        }
+
+        .individual-stat {
+            text-align: center;
+        }
+
+        .individual-stat-number {
+            font-size: 1.3rem;
+            font-weight: 800;
+            color: var(--dark-blue);
+            line-height: 1;
+            margin-bottom: 0.25rem;
+        }
+
+        .individual-stat-label {
+            font-size: 0.75rem;
+            color: var(--text-light);
+            font-weight: 500;
+        }
+
+        @media (max-width: 968px) {
+            .module-management-section {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Admin Header -->
+    <header class="admin-header">
+        <div class="container">
+            <div class="header-content">
+                <div class="header-left">
+                    <h1>
+                <i class="fas fa-shield-alt"></i>
+                        Admin Dashboard
+                    </h1>
+        </div>
+                <div class="header-right">
+                    <div class="admin-stats">
+                        <div class="admin-stat">
+                            <div class="admin-stat-number">156</div>
+                            <div class="admin-stat-label">Total Regions</div>
+                        </div>
+                        <div class="admin-stat">
+                            <div class="admin-stat-number">2,450</div>
+                            <div class="admin-stat-label">Total Students</div>
+                        </div>
+                        <div class="admin-stat">
+                            <div class="admin-stat-number">42</div>
+                            <div class="admin-stat-label">Total Modules</div>
+                        </div>
+                    </div>
+                    <a href="login_admin.html" class="logout-btn-admin">
+                        <i class="fas fa-sign-out-alt"></i>
+                        <span>Logout</span>
+                    </a>
+                    <div class="admin-profile">AD</div>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Admin Dashboard Content -->
+    <section class="admin-dashboard">
+        <div class="container">
+            <!-- Tabs Navigation -->
+            <div class="tabs-container">
+                <div class="tabs-nav">
+                    <button class="tab-btn active" data-tab="modules">
+                        <i class="fas fa-book"></i>
+                        <span>Module Management</span>
+                    </button>
+                    <button class="tab-btn" data-tab="region">
+                        <i class="fas fa-map-marked-alt"></i>
+                        <span>Region Progress</span>
+                    </button>
+                    <button class="tab-btn" data-tab="individual">
+                        <i class="fas fa-user-graduate"></i>
+                        <span>Individual Progress</span>
+                    </button>
+            </div>
+
+                <!-- Module Management Tab -->
+                <div class="tab-content active" id="modules-tab">
+                    <div class="module-management-section">
+                        <!-- Module List -->
+                        <div class="module-list-card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-list"></i>
+                                    Current Modules
+                                </h3>
+                                <button class="action-btn edit" onclick="showAddModuleForm()">
+                                    <i class="fas fa-plus"></i>
+                                    <span>Add New</span>
+                                </button>
+        </div>
+                            <div class="module-list">
+                                <!-- Module Item 1 -->
+                                <div class="module-item" onclick="editModule('MOD001')">
+                                    <div class="module-item-header">
+                                        <div class="module-item-title">
+                                            <i class="fas fa-book"></i>
+                                            English Basics
+        </div>
+                                        <div class="module-item-actions" onclick="event.stopPropagation()">
+                                            <button class="action-btn edit" onclick="editModule('MOD001')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="action-btn delete" onclick="deleteModule('MOD001')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                    <div class="module-item-meta">Module 1 - Fundamentals</div>
+                                    <div class="module-item-stats">
+                                        <span><i class="fas fa-users"></i> 2,450 Students</span>
+                                        <span><i class="fas fa-check-circle"></i> 78% Completion</span>
+                                    </div>
+                                </div>
+
+                                <!-- Module Item 2 -->
+                                <div class="module-item" onclick="editModule('MOD002')">
+                                    <div class="module-item-header">
+                                        <div class="module-item-title">
+                                            <i class="fas fa-calculator"></i>
+                                            Mathematics Fundamentals
+            </div>
+                                        <div class="module-item-actions" onclick="event.stopPropagation()">
+                                            <button class="action-btn edit" onclick="editModule('MOD002')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="action-btn delete" onclick="deleteModule('MOD002')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                </div>
+            </div>
+                                    <div class="module-item-meta">Module 2 - Basic Math</div>
+                                    <div class="module-item-stats">
+                                        <span><i class="fas fa-users"></i> 2,450 Students</span>
+                                        <span><i class="fas fa-check-circle"></i> 65% Completion</span>
+                                    </div>
+                                </div>
+
+                                <!-- Module Item 3 -->
+                                <div class="module-item" onclick="editModule('MOD003')">
+                                    <div class="module-item-header">
+                                        <div class="module-item-title">
+                                            <i class="fas fa-language"></i>
+                                            Grammar Essentials
+                </div>
+                                        <div class="module-item-actions" onclick="event.stopPropagation()">
+                                            <button class="action-btn edit" onclick="editModule('MOD003')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="action-btn delete" onclick="deleteModule('MOD003')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                </div>
+            </div>
+                                    <div class="module-item-meta">Module 3 - Language Skills</div>
+                                    <div class="module-item-stats">
+                                        <span><i class="fas fa-users"></i> 2,450 Students</span>
+                                        <span><i class="fas fa-check-circle"></i> 72% Completion</span>
+                </div>
+                </div>
+
+                                <!-- Module Item 4 -->
+                                <div class="module-item" onclick="editModule('MOD004')">
+                                    <div class="module-item-header">
+                                        <div class="module-item-title">
+                                            <i class="fas fa-flask"></i>
+                                            Science Basics
+            </div>
+                                        <div class="module-item-actions" onclick="event.stopPropagation()">
+                                            <button class="action-btn edit" onclick="editModule('MOD004')">
+                                                <i class="fas fa-edit"></i>
+                                            </button>
+                                            <button class="action-btn delete" onclick="deleteModule('MOD004')">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                </div>
+                </div>
+                                    <div class="module-item-meta">Module 4 - General Science</div>
+                                    <div class="module-item-stats">
+                                        <span><i class="fas fa-users"></i> 2,450 Students</span>
+                                        <span><i class="fas fa-check-circle"></i> 68% Completion</span>
+            </div>
+                </div>
+                </div>
+            </div>
+
+                        <!-- Module Form -->
+                        <div class="module-form-card">
+                            <div class="card-header">
+                                <h3>
+                                    <i class="fas fa-edit"></i>
+                                    Add/Edit Module
+                                </h3>
+                        </div>
+                            <form id="moduleForm" onsubmit="saveModule(event)">
+                                <div class="form-group">
+                                    <label for="moduleTitle">Module Title</label>
+                                    <input type="text" id="moduleTitle" placeholder="e.g., English Basics" required>
+                    </div>
+                                <div class="form-group">
+                                    <label for="moduleCode">Module Code</label>
+                                    <input type="text" id="moduleCode" placeholder="e.g., MOD001" required>
+                        </div>
+                                <div class="form-group">
+                                    <label for="moduleDescription">Description</label>
+                                    <textarea id="moduleDescription" placeholder="Module description and learning objectives..." required></textarea>
+                    </div>
+                                <div class="form-group">
+                                    <label for="moduleLevel">Difficulty Level</label>
+                                    <select id="moduleLevel" required>
+                                        <option value="">Select Level</option>
+                                        <option value="beginner">Beginner</option>
+                                        <option value="intermediate">Intermediate</option>
+                                        <option value="advanced">Advanced</option>
+                                    </select>
+                        </div>
+                                <div class="form-group">
+                                    <label for="moduleDuration">Duration (weeks)</label>
+                                    <input type="number" id="moduleDuration" placeholder="e.g., 8" min="1" required>
+                                </div>
+                                <button type="submit" class="submit-btn">
+                                    <i class="fas fa-save"></i>
+                                    Save Module
+                                </button>
+                            </form>
+                    </div>
+                </div>
+            </div>
+
+                <!-- Region Progress Tab -->
+                <div class="tab-content" id="region-tab">
+                    <div class="region-stats-grid">
+                        <!-- Region Card 1 -->
+                        <div class="region-card">
+                            <div class="region-header">
+                                <div class="region-name">
+                            <i class="fas fa-map-marker-alt"></i>
+                                    Perak
+                        </div>
+                        </div>
+                            <div class="region-progress-overall">
+                                <div class="progress-label">
+                                    <span>Overall Progress</span>
+                                    <span class="progress-percentage">78%</span>
+                    </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 78%"></div>
+                        </div>
+                        </div>
+                            <div class="region-stats">
+                                <div class="region-stat">
+                                    <div class="region-stat-number">1,250</div>
+                                    <div class="region-stat-label">Students</div>
+                    </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">42</div>
+                                    <div class="region-stat-label">Modules</div>
+                </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">975</div>
+                                    <div class="region-stat-label">Active</div>
+            </div>
+                            </div>
+                        </div>
+
+                        <!-- Region Card 2 -->
+                        <div class="region-card">
+                            <div class="region-header">
+                                <div class="region-name">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Kelantan
+            </div>
+                    </div>
+                            <div class="region-progress-overall">
+                                <div class="progress-label">
+                                    <span>Overall Progress</span>
+                                    <span class="progress-percentage">72%</span>
+                    </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 72%"></div>
+                </div>
+                    </div>
+                            <div class="region-stats">
+                                <div class="region-stat">
+                                    <div class="region-stat-number">850</div>
+                                    <div class="region-stat-label">Students</div>
+                    </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">38</div>
+                                    <div class="region-stat-label">Modules</div>
+                </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">612</div>
+                                    <div class="region-stat-label">Active</div>
+                    </div>
+                    </div>
+                </div>
+
+                        <!-- Region Card 3 -->
+                        <div class="region-card">
+                            <div class="region-header">
+                                <div class="region-name">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Terengganu
+            </div>
+                            </div>
+                            <div class="region-progress-overall">
+                                <div class="progress-label">
+                                    <span>Overall Progress</span>
+                                    <span class="progress-percentage">68%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 68%"></div>
+                                </div>
+                            </div>
+                            <div class="region-stats">
+                                <div class="region-stat">
+                                    <div class="region-stat-number">350</div>
+                                    <div class="region-stat-label">Students</div>
+                                </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">35</div>
+                                    <div class="region-stat-label">Modules</div>
+                                </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">238</div>
+                                    <div class="region-stat-label">Active</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Region Card 4 -->
+                        <div class="region-card">
+                            <div class="region-header">
+                                <div class="region-name">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Pahang
+                    </div>
+                    </div>
+                            <div class="region-progress-overall">
+                                <div class="progress-label">
+                                    <span>Overall Progress</span>
+                                    <span class="progress-percentage">75%</span>
+                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 75%"></div>
+                    </div>
+                    </div>
+                            <div class="region-stats">
+                                <div class="region-stat">
+                                    <div class="region-stat-number">520</div>
+                                    <div class="region-stat-label">Students</div>
+                </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">40</div>
+                                    <div class="region-stat-label">Modules</div>
+                    </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">390</div>
+                                    <div class="region-stat-label">Active</div>
+                    </div>
+                </div>
+                    </div>
+
+                        <!-- Region Card 5 -->
+                        <div class="region-card">
+                            <div class="region-header">
+                                <div class="region-name">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Kedah
+                    </div>
+                </div>
+                            <div class="region-progress-overall">
+                                <div class="progress-label">
+                                    <span>Overall Progress</span>
+                                    <span class="progress-percentage">70%</span>
+            </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 70%"></div>
+                                </div>
+                            </div>
+                            <div class="region-stats">
+                                <div class="region-stat">
+                                    <div class="region-stat-number">680</div>
+                                    <div class="region-stat-label">Students</div>
+                                </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">37</div>
+                                    <div class="region-stat-label">Modules</div>
+                                </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">476</div>
+                                    <div class="region-stat-label">Active</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Region Card 6 -->
+                        <div class="region-card">
+                            <div class="region-header">
+                                <div class="region-name">
+                                    <i class="fas fa-map-marker-alt"></i>
+                                    Sabah
+                                </div>
+                            </div>
+                            <div class="region-progress-overall">
+                                <div class="progress-label">
+                                    <span>Overall Progress</span>
+                                    <span class="progress-percentage">65%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 65%"></div>
+                                </div>
+                            </div>
+                            <div class="region-stats">
+                                <div class="region-stat">
+                                    <div class="region-stat-number">1,420</div>
+                                    <div class="region-stat-label">Students</div>
+                                </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">32</div>
+                                    <div class="region-stat-label">Modules</div>
+                                </div>
+                                <div class="region-stat">
+                                    <div class="region-stat-number">923</div>
+                                    <div class="region-stat-label">Active</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Individual Progress Tab -->
+                <div class="tab-content" id="individual-tab">
+                    <div class="progress-search-section">
+                        <div class="search-filter-container">
+                            <div class="search-box">
+                                <i class="fas fa-search"></i>
+                                <input type="text" placeholder="Search students by name or ID..." id="studentSearch">
+                            </div>
+                            <button class="filter-btn active" data-filter="all">
+                                <i class="fas fa-list"></i>
+                                <span>All</span>
+                            </button>
+                            <button class="filter-btn" data-filter="perak">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Perak</span>
+                            </button>
+                            <button class="filter-btn" data-filter="kelantan">
+                                <i class="fas fa-map-marker-alt"></i>
+                                <span>Kelantan</span>
+                            </button>
+                            <button class="filter-btn" data-filter="high">
+                                <i class="fas fa-arrow-up"></i>
+                                <span>High Performers</span>
+                            </button>
+                        </div>
+                    </div>
+
+                    <div class="individual-progress-grid" id="individualGrid">
+                        <!-- Individual Card 1 -->
+                        <div class="individual-card" data-region="perak" data-performance="high">
+                            <div class="individual-header">
+                                <div class="individual-avatar">AH</div>
+                                <div class="individual-info">
+                                    <h3>Ahmad Hassan</h3>
+                                    <p>ID: STU001</p>
+                                </div>
+                                <div class="individual-region">Perak</div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Modules Progress</span>
+                                    <span class="progress-percentage">85%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 85%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Exercises Completed</span>
+                                    <span class="progress-percentage">78%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 78%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-stats">
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">10/12</div>
+                                    <div class="individual-stat-label">Modules</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">39/50</div>
+                                    <div class="individual-stat-label">Exercises</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">1,450</div>
+                                    <div class="individual-stat-label">XP Points</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Card 2 -->
+                        <div class="individual-card" data-region="kelantan" data-performance="high">
+                            <div class="individual-header">
+                                <div class="individual-avatar">SA</div>
+                                <div class="individual-info">
+                                    <h3>Siti Aminah</h3>
+                                    <p>ID: STU002</p>
+                                </div>
+                                <div class="individual-region">Kelantan</div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Modules Progress</span>
+                                    <span class="progress-percentage">92%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 92%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Exercises Completed</span>
+                                    <span class="progress-percentage">88%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-stats">
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">11/12</div>
+                                    <div class="individual-stat-label">Modules</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">44/50</div>
+                                    <div class="individual-stat-label">Exercises</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">2,180</div>
+                                    <div class="individual-stat-label">XP Points</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Card 3 -->
+                        <div class="individual-card" data-region="perak" data-performance="medium">
+                            <div class="individual-header">
+                                <div class="individual-avatar">MR</div>
+                                <div class="individual-info">
+                                    <h3>Mohammad Razak</h3>
+                                    <p>ID: STU003</p>
+                                </div>
+                                <div class="individual-region">Perak</div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Modules Progress</span>
+                                    <span class="progress-percentage">35%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 35%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Exercises Completed</span>
+                                    <span class="progress-percentage">28%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 28%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-stats">
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">4/12</div>
+                                    <div class="individual-stat-label">Modules</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">14/50</div>
+                                    <div class="individual-stat-label">Exercises</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">520</div>
+                                    <div class="individual-stat-label">XP Points</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Card 4 -->
+                        <div class="individual-card" data-region="terengganu" data-performance="high">
+                            <div class="individual-header">
+                                <div class="individual-avatar">FN</div>
+                                <div class="individual-info">
+                                    <h3>Fatimah Nor</h3>
+                                    <p>ID: STU004</p>
+                                </div>
+                                <div class="individual-region">Terengganu</div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Modules Progress</span>
+                                    <span class="progress-percentage">88%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 88%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Exercises Completed</span>
+                                    <span class="progress-percentage">80%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 80%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-stats">
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">10/12</div>
+                                    <div class="individual-stat-label">Modules</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">40/50</div>
+                                    <div class="individual-stat-label">Exercises</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">1,900</div>
+                                    <div class="individual-stat-label">XP Points</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Card 5 -->
+                        <div class="individual-card" data-region="pahang" data-performance="medium">
+                            <div class="individual-header">
+                                <div class="individual-avatar">IS</div>
+                                <div class="individual-info">
+                                    <h3>Ismail Saleh</h3>
+                                    <p>ID: STU005</p>
+                                </div>
+                                <div class="individual-region">Pahang</div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Modules Progress</span>
+                                    <span class="progress-percentage">60%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 60%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Exercises Completed</span>
+                                    <span class="progress-percentage">55%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 55%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-stats">
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">7/12</div>
+                                    <div class="individual-stat-label">Modules</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">28/50</div>
+                                    <div class="individual-stat-label">Exercises</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">980</div>
+                                    <div class="individual-stat-label">XP Points</div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Individual Card 6 -->
+                        <div class="individual-card" data-region="kedah" data-performance="low">
+                            <div class="individual-header">
+                                <div class="individual-avatar">RK</div>
+                                <div class="individual-info">
+                                    <h3>Razak Kamal</h3>
+                                    <p>ID: STU006</p>
+                                </div>
+                                <div class="individual-region">Kedah</div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Modules Progress</span>
+                                    <span class="progress-percentage">42%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 42%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-progress-item">
+                                <div class="progress-label">
+                                    <span>Exercises Completed</span>
+                                    <span class="progress-percentage">36%</span>
+                                </div>
+                                <div class="progress-bar">
+                                    <div class="progress-fill" style="width: 36%"></div>
+                                </div>
+                            </div>
+                            <div class="individual-stats">
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">5/12</div>
+                                    <div class="individual-stat-label">Modules</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">18/50</div>
+                                    <div class="individual-stat-label">Exercises</div>
+                                </div>
+                                <div class="individual-stat">
+                                    <div class="individual-stat-number">650</div>
+                                    <div class="individual-stat-label">XP Points</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
+        </section>
+
+    <script>
+        // Tab switching functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const targetTab = this.dataset.tab;
+                
+                // Remove active class from all tabs and buttons
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                
+                // Add active class to clicked button and corresponding tab
+                this.classList.add('active');
+                document.getElementById(`${targetTab}-tab`).classList.add('active');
+            });
+        });
+
+        // Module Management Functions
+        function showAddModuleForm() {
+            document.getElementById('moduleForm').reset();
+            document.querySelector('.module-form-card .card-header h3').innerHTML = '<i class="fas fa-edit"></i> Add New Module';
+        }
+
+        function editModule(moduleId) {
+            // In a real application, this would fetch module data from an API
+            // For now, we'll populate with sample data
+            const moduleData = {
+                'MOD001': { title: 'English Basics', code: 'MOD001', description: 'Fundamental English language skills', level: 'beginner', duration: 8 },
+                'MOD002': { title: 'Mathematics Fundamentals', code: 'MOD002', description: 'Basic mathematical concepts', level: 'beginner', duration: 10 },
+                'MOD003': { title: 'Grammar Essentials', code: 'MOD003', description: 'Essential grammar rules and applications', level: 'intermediate', duration: 8 },
+                'MOD004': { title: 'Science Basics', code: 'MOD004', description: 'Introduction to general science', level: 'beginner', duration: 12 }
+            };
+
+            const data = moduleData[moduleId] || {};
+            document.getElementById('moduleTitle').value = data.title || '';
+            document.getElementById('moduleCode').value = data.code || '';
+            document.getElementById('moduleDescription').value = data.description || '';
+            document.getElementById('moduleLevel').value = data.level || '';
+            document.getElementById('moduleDuration').value = data.duration || '';
+            
+            document.querySelector('.module-form-card .card-header h3').innerHTML = '<i class="fas fa-edit"></i> Edit Module';
+        }
+
+        function deleteModule(moduleId) {
+            if (confirm(`Are you sure you want to delete module ${moduleId}? This action cannot be undone.`)) {
+                // In a real application, this would make an API call to delete the module
+                alert(`Module ${moduleId} has been deleted.`);
+                // Refresh module list
+                location.reload();
+            }
+        }
+
+        function saveModule(event) {
+            event.preventDefault();
+            
+            const moduleData = {
+                title: document.getElementById('moduleTitle').value,
+                code: document.getElementById('moduleCode').value,
+                description: document.getElementById('moduleDescription').value,
+                level: document.getElementById('moduleLevel').value,
+                duration: document.getElementById('moduleDuration').value
+            };
+
+            // In a real application, this would make an API call to save the module
+            alert(`Module "${moduleData.title}" has been saved successfully!`);
+            
+            // Reset form
+            document.getElementById('moduleForm').reset();
+            document.querySelector('.module-form-card .card-header h3').innerHTML = '<i class="fas fa-edit"></i> Add/Edit Module';
+            
+            // In a real application, refresh the module list
+            // location.reload();
+        }
+
+        // Individual Progress Search and Filter
+        document.getElementById('studentSearch').addEventListener('input', function(e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const cards = document.querySelectorAll('.individual-card');
+            
+            cards.forEach(card => {
+                const name = card.querySelector('.individual-info h3').textContent.toLowerCase();
+                const id = card.querySelector('.individual-info p').textContent.toLowerCase();
+                
+                if (name.includes(searchTerm) || id.includes(searchTerm)) {
+                    card.style.display = 'block';
+                } else {
+                    card.style.display = 'none';
+                }
+            });
+        });
+
+        document.querySelectorAll('#individual-tab .filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                // Remove active class from all buttons
+                document.querySelectorAll('#individual-tab .filter-btn').forEach(b => b.classList.remove('active'));
+                // Add active class to clicked button
+                this.classList.add('active');
+                
+                const filter = this.dataset.filter;
+                const cards = document.querySelectorAll('.individual-card');
+                
+                cards.forEach(card => {
+                    const region = card.dataset.region;
+                    const performance = card.dataset.performance;
+                    let showCard = false;
+                    
+                    if (filter === 'all') {
+                        showCard = true;
+                    } else if (filter === region) {
+                        showCard = true;
+                    } else if (filter === 'high' && performance === 'high') {
+                        showCard = true;
+                    }
+                    
+                    card.style.display = showCard ? 'block' : 'none';
+                });
+            });
+        });
+    </script>
+</body>
+</html>
+

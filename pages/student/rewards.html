@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rewards - IDuCation</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&family=Montserrat:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="../../css/main.css">
+    <link rel="stylesheet" href="../../css/student-dashboard.css">
+</head>
+<body class="student-page">
+    <!-- Sidebar Navigation -->
+    <nav class="sidebar-nav" id="sidebarNav">
+        <div class="sidebar-logo">
+            <div class="sidebar-logo-content">
+                <div class="sidebar-logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="sidebar-logo-text">
+                    <h3>IDuCation</h3>
+                    <p>Student Portal</p>
+                </div>
+            </div>
+        </div>
+        <div class="sidebar-nav-items">
+            <a href="home.html" class="sidebar-nav-item">
+                <i class="fas fa-home"></i>
+                <span>Home</span>
+            </a>
+            <a href="learn.html" class="sidebar-nav-item">
+                <i class="fas fa-book"></i>
+                <span>Learn</span>
+            </a>
+            <a href="rewards.html" class="sidebar-nav-item active">
+                <i class="fas fa-gift"></i>
+                <span>Rewards</span>
+            </a>
+            <a href="profile.html" class="sidebar-nav-item">
+                <i class="fas fa-user"></i>
+                <span>Profile</span>
+            </a>
+        </div>
+        <div class="sidebar-footer">
+            <a href="../../login.html" class="sidebar-logout-btn">
+                <div class="logout-icon">
+                    <i class="fas fa-sign-out-alt"></i>
+                </div>
+                <span class="logout-text">Logout</span>
+            </a>
+        </div>
+    </nav>
+
+    <!-- Sidebar Overlay (Mobile) -->
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar Toggle Button (Mobile) -->
+    <button class="sidebar-toggle" id="sidebarToggle">
+        <i class="fas fa-bars"></i>
+    </button>
+
+    <!-- Top Header Bar -->
+    <header class="student-header">
+        <div class="container">
+            <div class="header-left">
+                <div class="logo-icon">
+                    <i class="fas fa-graduation-cap"></i>
+                </div>
+                <div class="welcome-text">
+                    <h2>Welcome Back!</h2>
+                    <p class="student-name">Ahmad</p>
+                </div>
+            </div>
+            <div class="header-right">
+                <!-- Latest Badge -->
+                <div class="latest-badge-header">
+                    <div class="latest-badge-icon">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="latest-badge-info">
+                        <span class="latest-badge-label">Latest Badge</span>
+                        <span class="latest-badge-name">Week Warrior</span>
+                    </div>
+                </div>
+                <div class="xp-points-card">
+                    <div class="xp-icon">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="xp-info">
+                        <span class="xp-label">XPPoints</span>
+                        <span class="xp-value">1,250</span>
+                    </div>
+                </div>
+                <div class="profile-avatar">
+                    <i class="fas fa-user"></i>
+                </div>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Content -->
+    <main class="student-dashboard">
+        <div class="container">
+            <!-- Points Summary -->
+            <section class="points-summary-section">
+                <div class="points-card-large">
+                    <div class="points-icon-large">
+                        <i class="fas fa-coins"></i>
+                    </div>
+                    <div class="points-info-large">
+                        <h2>1,250 XPPoints</h2>
+                        <p>Keep learning to earn more!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- XP Points Explanation -->
+            <section class="xp-explanation-section">
+                <div class="xp-explanation-card">
+                    <div class="explanation-icon">
+                        <i class="fas fa-info-circle"></i>
+                    </div>
+                    <div class="explanation-content">
+                        <h3>How XPPoints Work</h3>
+                        <p>Earn XPPoints by completing lessons and attending school. Your points are automatically saved on your Smart ID digital card.</p>
+                        <p>Use your Smart ID at partner stores to get help and support like:</p>
+                        <div class="xp-benefits">
+                            <div class="benefit-item">
+                                <i class="fas fa-book"></i>
+                                <span>School Supplies</span>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-utensils"></i>
+                                <span>Food Vouchers</span>
+                            </div>
+                            <div class="benefit-item">
+                                <i class="fas fa-wifi"></i>
+                                <span>Internet Data</span>
+                            </div>
+                        </div>
+                        <p class="explanation-note">Your points convert to government subsidies and are stored directly on your Smart ID!</p>
+                    </div>
+                </div>
+            </section>
+
+            <!-- Your Rewards -->
+            <section class="rewards-section">
+                <h2 class="section-title-visual">
+                    <i class="fas fa-gift"></i>
+                    Your Rewards
+                </h2>
+                <p class="section-description">These rewards are already on your Smart ID. Show your Smart ID at any partner store to redeem them!</p>
+
+                <div class="rewards-grid">
+                    <!-- Reward Item 1 -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>School Supplies Pack</h3>
+                            <p>Notebooks, pens, pencils</p>
+                            <div class="reward-info">
+                                <i class="fas fa-store"></i>
+                                <span>Available at partner stores</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Find Store
+                        </button>
+                    </div>
+
+                    <!-- Reward Item 2 -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image">
+                            <i class="fas fa-utensils"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Food Voucher</h3>
+                            <p>RM 20 meal voucher</p>
+                            <div class="reward-info">
+                                <i class="fas fa-store"></i>
+                                <span>Available at partner stores</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Find Store
+                        </button>
+                    </div>
+
+                    <!-- Reward Item 3 -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Internet Data</h3>
+                            <p>5GB mobile data</p>
+                            <div class="reward-info">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>Redeem via mobile app</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-mobile-alt"></i>
+                            Redeem Now
+                        </button>
+                    </div>
+
+                    <!-- Reward Item 4 -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image">
+                            <i class="fas fa-tshirt"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>School Uniform</h3>
+                            <p>Complete school uniform set</p>
+                            <div class="reward-info">
+                                <i class="fas fa-store"></i>
+                                <span>Available at partner stores</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Find Store
+                        </button>
+                    </div>
+
+                    <!-- Reward Item 5 -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image">
+                            <i class="fas fa-shoe-prints"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>School Shoes</h3>
+                            <p>Comfortable school shoes</p>
+                            <div class="reward-info">
+                                <i class="fas fa-store"></i>
+                                <span>Available at partner stores</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Find Store
+                        </button>
+                    </div>
+
+                    <!-- Reward Item 6 -->
+                    <div class="reward-card-item">
+                        <div class="reward-badge locked-badge">
+                            <i class="fas fa-lock"></i>
+                            <span>Not Available</span>
+                        </div>
+                        <div class="reward-image">
+                            <i class="fas fa-tablet-alt"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Learning Tablet</h3>
+                            <p>Educational tablet device</p>
+                            <div class="reward-info">
+                                <i class="fas fa-info-circle"></i>
+                                <span>Coming soon</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn disabled" disabled>
+                            <i class="fas fa-lock"></i>
+                            Not Available
+                        </button>
+                    </div>
+                </div>
+            </section>
+        </div>
+    </main>
+
+
+    <script src="../../js/student-dashboard.js"></script>
+</body>
+</html>
+
