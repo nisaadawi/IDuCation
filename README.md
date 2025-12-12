@@ -6,7 +6,7 @@
 
 > **Track. Learn. Reward. Empower.**
 
-## 🔗 Links  
+### 🔗 Links  
 - **Live Website Demo**: [https://hfsha.com/IDuCation-web/index.html](https://hfsha.com/IDuCation-web/index.html)
 - **YouTube Video Demo**: [https://youtu.be/7ZuoYLdCdJs?si=wDEuqKMezlp4Pr2G](https://youtu.be/7ZuoYLdCdJs?si=wDEuqKMezlp4Pr2G)
 - **Pitch Deck**: [PITCH DECK OJOUSAMA.pdf](PITCH%20DECK%20OJOUSAMA.pdf)  
