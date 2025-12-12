@@ -6,6 +6,13 @@
 
 > **Track. Learn. Reward. Empower.**
 
+## 🔗 Links  
+- **Webiste Demo**: [https://hfsha.com/IDuCation-web/index.html](https://hfsha.com/IDuCation-web/index.html)
+- **Video Demo**: [https://youtu.be/7ZuoYLdCdJs?si=wDEuqKMezlp4Pr2G](https://youtu.be/7ZuoYLdCdJs?si=wDEuqKMezlp4Pr2G)
+- **Pitch Deck**: [PITCH DECK OJOUSAMA.pdf](PITCH%20DECK%20OJOUSAMA.pdf)  
+- **GitHub Repository**: [https://github.com/your-username/IDuCation](https://github.com/your-username/IDuCation)  
+- **Hackathon Track**: Inclusivity (GODAM Lahl 2.0 Smart ID Hackathon)
+  
 ---
 
 ## 🧠 Problem Statement  
@@ -51,14 +58,6 @@ IDuCation integrates three core functions into the Smart ID:
 | Khairun Nisaa Binti Dawi Cahyono | Project Lead & Developer | Technical Architecture & Integration |
 | Shahidatul Hidayah Binti Ahmad Faizal | UI/UX Designer & Developer | Inclusive Experience & Frontend |
 | Irdina Nurbalqis Binti Abdul Rashid | Research & Content Specialist | Context & Learning Systems |
-
----
-
-## 🔗 Links  
-- **Live Demo**: [https://hfsha.com/IDuCation-web/index.html](https://hfsha.com/IDuCation-web/index.html)
-- **Pitch Deck**: [PITCH DECK OJOUSAMA.pdf](PITCH%20DECK%20OJOUSAMA.pdf)  
-- **GitHub Repository**: [https://github.com/your-username/IDuCation](https://github.com/your-username/IDuCation)  
-- **Hackathon Track**: Inclusivity (GODAM Lahl 2.0 Smart ID Hackathon)
 
 ---
 
