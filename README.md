@@ -4,15 +4,14 @@
 ## 🎯 Project Overview  
 **IDuCation** is a secure, inclusive platform that transforms Malaysia’s National Smart ID into a digital key for learning and opportunity. It addresses the triple barrier faced by rural students—**decentralized tracking**, **fragmented progress**, and **bureaucratic access to subsidies**—by integrating attendance, learning, and welfare into one unified, offline-first system.
 
+> **Track. Learn. Reward. Empower.**
+
 ## 🔗 Links  
 - **Live Website Demo**: [https://hfsha.com/IDuCation-web/index.html](https://hfsha.com/IDuCation-web/index.html)
 - **YouTube Video Demo**: [https://youtu.be/7ZuoYLdCdJs?si=wDEuqKMezlp4Pr2G](https://youtu.be/7ZuoYLdCdJs?si=wDEuqKMezlp4Pr2G)
 - **Pitch Deck**: [PITCH DECK OJOUSAMA.pdf](PITCH%20DECK%20OJOUSAMA.pdf)  
 - **GitHub Repository**: [https://github.com/your-username/IDuCation](https://github.com/your-username/IDuCation)  
 - **Hackathon Track**: Inclusivity (GODAM Lahl 2.0 Smart ID Hackathon)
-
-
-> **Track. Learn. Reward. Empower.**
 
 ---
 
