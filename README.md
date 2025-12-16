@@ -10,7 +10,7 @@
 - **Live Website Demo**: [https://hfsha.com/IDuCation-web/index.html](https://hfsha.com/IDuCation-web/index.html)
 - **YouTube Video Demo**: [https://youtu.be/7ZuoYLdCdJs?si=wDEuqKMezlp4Pr2G](https://youtu.be/7ZuoYLdCdJs?si=wDEuqKMezlp4Pr2G)
 - **Pitch Deck**: [PITCH DECK OJOUSAMA.pdf](PITCH%20DECK%20OJOUSAMA.pdf)  
-- **GitHub Repository**: [https://github.com/your-username/IDuCation](https://github.com/your-username/IDuCation)  
+- **GitHub Repository**: [https://github.com/nisaadawi/IDuCation](https://github.com/nisaadawi/IDuCation)  
 - **Hackathon Track**: Inclusivity (GODAM Lahl 2.0 Smart ID Hackathon)
 
 ---
