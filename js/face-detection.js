@@ -19,6 +19,11 @@ class FaceRecognitionSystem {
         this.consecutiveMismatches = 0;
         this.requiredConsecutiveMatches = 3; // Require 3 consecutive matches for verification
         
+        this.isStudentVerified = false;
+        this.isQuizEnabled = true;
+        this.verificationTimeout = null;
+        this.lastVerificationTime = null;
+
         this.init();
     }
     
@@ -32,6 +37,9 @@ class FaceRecognitionSystem {
         
         // Extract features from reference photo
         await this.extractReferenceFaceFeatures();
+        
+        // Check saved quiz state
+        this.checkQuizState();
     }
     
     cacheElements() {
@@ -305,7 +313,7 @@ class FaceRecognitionSystem {
             } finally {
                 this.isProcessingFrame = false;
             }
-        }, 1000); // Process every second
+        }, 5000); // Process every second
     }
     
     async processVideoFrame() {
@@ -393,7 +401,6 @@ class FaceRecognitionSystem {
         }
         
         try {
-            // Calculate Euclidean distance between descriptors
             const distance = faceapi.euclideanDistance(
                 this.referenceFaceDescriptor, 
                 currentDescriptor
@@ -401,17 +408,42 @@ class FaceRecognitionSystem {
             
             console.log(`Face distance: ${distance.toFixed(4)}`);
             
-            // Lower distance means more similar
-            // Typical threshold is 0.6, but we can adjust based on requirements
-            const similarityThreshold = 0.5; // Lower threshold for stricter matching
-            
+            const similarityThreshold = 0.5;
             const isMatch = distance < similarityThreshold;
             
-            // For debugging, log the match status
+            // Store match result
+            this.lastMatchResult = isMatch;
+            this.lastMatchDistance = distance;
+            this.lastVerificationTime = new Date();
+            
+            // Update verification state
+            this.isStudentVerified = isMatch;
+            
+            // Handle quiz state based on verification
             if (isMatch) {
-                console.log(`✅ Face match! Distance: ${distance.toFixed(4)}`);
+                this.consecutiveMatches++;
+                this.consecutiveMismatches = 0;
+                
+                if (this.consecutiveMatches >= this.requiredConsecutiveMatches) {
+                    // Student verified - enable quiz
+                    if (!this.isQuizEnabled) {
+                        this.enableQuiz();
+                    }
+                    this.updateVerificationStatus(true, 'Student verified ✓');
+                    this.dispatchVerificationEvent(true);
+                }
             } else {
-                console.log(`❌ Face mismatch! Distance: ${distance.toFixed(4)}`);
+                this.consecutiveMismatches++;
+                this.consecutiveMatches = 0;
+                
+                if (this.consecutiveMismatches >= 2) {
+                    // Not student - disable quiz
+                    if (this.isQuizEnabled) {
+                        this.disableQuiz();
+                    }
+                    this.updateVerificationStatus(false, 'You are not student');
+                    this.dispatchVerificationEvent(false);
+                }
             }
             
             return isMatch;
@@ -432,12 +464,24 @@ class FaceRecognitionSystem {
                 this.faceMatchStatus.classList.add('matched');
                 this.faceMatchText.textContent = message;
                 this.showMatchOverlay(true);
+                
+                // Dispatch quiz state change event
+                const enableEvent = new CustomEvent('quizStateChange', {
+                    detail: { enabled: true }
+                });
+                document.dispatchEvent(enableEvent);
                 break;
                 
             case false: // Not student
                 this.faceMatchStatus.classList.add('unmatched');
                 this.faceMatchText.textContent = message;
                 this.showMatchOverlay(false);
+                
+                // Dispatch quiz state change event
+                const disableEvent = new CustomEvent('quizStateChange', {
+                    detail: { enabled: false }
+                });
+                document.dispatchEvent(disableEvent);
                 break;
                 
             case 'matching':
@@ -479,7 +523,7 @@ class FaceRecognitionSystem {
         // Hide overlay after 3 seconds
         setTimeout(() => {
             overlay.style.display = 'none';
-        }, 3000);
+        }, 5000);
     }
     
     showNotification(message, type = 'info') {
@@ -538,16 +582,21 @@ class FaceRecognitionSystem {
         this.faceVideo.srcObject = null;
         this.isCameraActive = false;
         
-        // Reset counters
-        this.consecutiveMatches = 0;
-        this.consecutiveMismatches = 0;
-        
         // Update UI
         this.updateCameraUI(false);
         
         console.log('Camera stopped');
+        
+        // Check if we need to disable quiz when camera stops during lesson
+        if (!this.isLessonCompleted && !this.isStudentVerified) {
+            setTimeout(() => {
+                if (!this.isCameraActive && !this.isStudentVerified) {
+                    this.disableQuiz();
+                }
+            }, 5000); // Give 5 seconds before disabling
+        }
     }
-    
+
     showCameraError() {
         this.faceMatchStatus.className = 'face-match-status';
         this.faceMatchText.textContent = 'Camera error';
@@ -558,6 +607,23 @@ class FaceRecognitionSystem {
         this.videoOverlay.style.display = 'flex';
     }
     
+    setupQuizMonitoring() {
+        // Monitor quiz state changes
+        const quizContainer = document.querySelector('.question-container');
+        if (quizContainer) {
+            this.quizContainer = quizContainer;
+        }
+        
+        // Add verification state listener
+        document.addEventListener('quizStateChange', (e) => {
+            if (e.detail && e.detail.enabled === false) {
+                this.disableQuiz();
+            } else {
+                this.enableQuiz();
+            }
+        });
+    }
+
     setupLessonMonitoring() {
         // Auto-start camera when lesson begins
         const checkLessonStart = setInterval(() => {
@@ -580,6 +646,9 @@ class FaceRecognitionSystem {
         
         // Monitor lesson completion
         this.setupCompletionMonitoring();
+
+        this.setupQuizMonitoring(); 
+
     }
     
     setupProgressMonitoring() {
@@ -619,6 +688,88 @@ class FaceRecognitionSystem {
             this.isLessonCompleted = true;
             this.stopCamera();
         });
+    }
+
+
+    disableQuiz() {
+        if (!this.isQuizEnabled) return;
+        
+        console.log('Disabling quiz...');
+        this.isQuizEnabled = false;
+        
+        // Add disabled class to body
+        document.body.classList.add('quiz-disabled');
+        
+        // Show dark overlay
+        const darkOverlay = document.getElementById('darkOverlay');
+        const blockedScreen = document.getElementById('verificationBlockedScreen');
+        
+        if (darkOverlay) darkOverlay.style.display = 'block';
+        if (blockedScreen) blockedScreen.style.display = 'block';
+        
+        // Add warning state to camera bubble
+        const bubble = document.querySelector('.face-recognition-bubble');
+        if (bubble) bubble.classList.add('warning');
+        
+        // Store current state
+        this.storeQuizState(false);
+        
+        // Show notification
+        this.showNotification('Quiz disabled - Unauthorized user detected', 'error');
+    }
+
+    enableQuiz() {
+        if (this.isQuizEnabled) return;
+        
+        console.log('Enabling quiz...');
+        this.isQuizEnabled = true;
+        this.isStudentVerified = true;
+        
+        // Remove disabled class from body
+        document.body.classList.remove('quiz-disabled');
+        
+        // Hide dark overlay and blocked screen
+        const darkOverlay = document.getElementById('darkOverlay');
+        const blockedScreen = document.getElementById('verificationBlockedScreen');
+        
+        if (darkOverlay) darkOverlay.style.display = 'none';
+        if (blockedScreen) blockedScreen.style.display = 'none';
+        
+        // Remove warning state from camera bubble
+        const bubble = document.querySelector('.face-recognition-bubble');
+        if (bubble) bubble.classList.remove('warning');
+        
+        // Store current state
+        this.storeQuizState(true);
+        
+        // Show notification
+        this.showNotification('Quiz enabled - Student verified', 'success');
+    }
+
+    storeQuizState(enabled) {
+        localStorage.setItem('quizEnabled', enabled.toString());
+        localStorage.setItem('lastVerificationTime', new Date().toISOString());
+    }
+
+    checkQuizState() {
+        const storedState = localStorage.getItem('quizEnabled');
+        const lastTime = localStorage.getItem('lastVerificationTime');
+        
+        if (storedState === 'false') {
+            // Check if we should auto-enable after timeout
+            if (lastTime) {
+                const lastVerification = new Date(lastTime);
+                const now = new Date();
+                const minutesSince = (now - lastVerification) / (1000 * 60);
+                
+                // Auto-enable after 5 minutes of inactivity
+                if (minutesSince > 5) {
+                    this.enableQuiz();
+                } else {
+                    this.disableQuiz();
+                }
+            }
+        }
     }
 }
 

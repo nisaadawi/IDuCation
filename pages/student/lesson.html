@@ -451,6 +451,18 @@
                 </div>
             </div>
         </div>
+        
+        <!-- Dark Overlay for Unverified Users -->
+        <div class="dark-overlay" id="darkOverlay"></div>
+
+        <!-- Verification Blocked Screen -->
+        <div class="verification-blocked-screen" id="verificationBlockedScreen" style="display: none;">
+            <i class="fas fa-user-lock"></i>
+            <h2>Unauthorized User Detected</h2>
+            <p>The system detected that you are not the registered student for this account. The quiz has been disabled.</p>
+            <p>Please switch back to the verified student to continue.</p>
+            <div class="face-match-status unmatched">NOT VERIFIED</div>
+        </div>
 
     <script src="../../js/modules.js"></script>
     <script src="../../js/face-api.min.js"></script>

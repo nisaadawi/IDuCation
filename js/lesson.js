@@ -8,6 +8,7 @@ let correctAnswers = 0;
 let answeredQuestions = new Set();
 let currentModule = null;
 let moduleQuestions = [];
+let quizEnabled = true;
 
 document.addEventListener('DOMContentLoaded', function() {
     // Try to load module from URL or sessionStorage
@@ -183,6 +184,19 @@ function initializeLesson() {
 }
 
 function setupEventListeners() {
+
+    document.addEventListener('quizStateChange', function(e) {
+        quizEnabled = e.detail.enabled;
+        
+        if (!quizEnabled) {
+            // Disable all interactive elements
+            disableAllQuizElements();
+        } else {
+            // Re-enable all interactive elements
+            enableAllQuizElements();
+        }
+    });
+    
     // Use event delegation for dynamically loaded questions
     document.addEventListener('click', function(e) {
         const answerOption = e.target.closest('.answer-option[data-correct]');
@@ -191,6 +205,59 @@ function setupEventListeners() {
             
             const isCorrect = answerOption.getAttribute('data-correct') === 'true';
             handleAnswer(answerOption, isCorrect);
+        }
+    });
+}
+
+function disableAllQuizElements() {
+    const answerOptions = document.querySelectorAll('.answer-option');
+    const submitButtons = document.querySelectorAll('.submit-answer-btn');
+    const blankInputs = document.querySelectorAll('.blank-input');
+    
+    answerOptions.forEach(opt => {
+        opt.disabled = true;
+        opt.style.cursor = 'not-allowed';
+        opt.style.opacity = '0.5';
+    });
+    
+    submitButtons.forEach(btn => {
+        btn.disabled = true;
+        btn.style.cursor = 'not-allowed';
+        btn.style.opacity = '0.5';
+    });
+    
+    blankInputs.forEach(input => {
+        input.disabled = true;
+        input.style.cursor = 'not-allowed';
+        input.style.opacity = '0.5';
+    });
+}
+
+function enableAllQuizElements() {
+    const answerOptions = document.querySelectorAll('.answer-option');
+    const submitButtons = document.querySelectorAll('.submit-answer-btn');
+    const blankInputs = document.querySelectorAll('.blank-input');
+    
+    // Only enable unanswered questions
+    answerOptions.forEach(opt => {
+        if (!answeredQuestions.has(currentQuestion)) {
+            opt.disabled = false;
+            opt.style.cursor = 'pointer';
+            opt.style.opacity = '1';
+        }
+    });
+    
+    submitButtons.forEach(btn => {
+        btn.disabled = false;
+        btn.style.cursor = 'pointer';
+        btn.style.opacity = '1';
+    });
+    
+    blankInputs.forEach(input => {
+        if (!answeredQuestions.has(currentQuestion)) {
+            input.disabled = false;
+            input.style.cursor = 'text';
+            input.style.opacity = '1';
         }
     });
 }
@@ -263,6 +330,12 @@ function handleAnswer(selectedOption, isCorrect) {
 }
 
 function checkFillBlank(blankId, correctAnswer) {
+    
+    if (!quizEnabled) {
+        showNotification('Quiz is disabled. Please verify your identity.', 'warning');
+        return;
+    }
+
     if (answeredQuestions.has(currentQuestion)) return;
     
     const input = document.getElementById(`blank${blankId}`);
@@ -312,6 +385,72 @@ function checkFillBlank(blankId, correctAnswer) {
     }
     
     updateProgress();
+}
+
+function showNotification(message, type = 'info') {
+    // Create notification element
+    const notification = document.createElement('div');
+    notification.className = `lesson-notification ${type}`;
+    notification.innerHTML = `
+        <i class="fas fa-${type === 'error' ? 'exclamation-circle' : type === 'warning' ? 'exclamation-triangle' : 'info-circle'}"></i>
+        <span>${message}</span>
+    `;
+    
+    // Add styles if not already added
+    if (!document.querySelector('#lessonNotificationStyles')) {
+        const style = document.createElement('style');
+        style.id = 'lessonNotificationStyles';
+        style.textContent = `
+            .lesson-notification {
+                position: fixed;
+                top: 100px;
+                right: 20px;
+                background: white;
+                color: #333;
+                padding: 15px 20px;
+                border-radius: 10px;
+                box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+                z-index: 10000;
+                display: flex;
+                align-items: center;
+                gap: 10px;
+                max-width: 350px;
+                animation: slideIn 0.3s ease;
+            }
+            
+            .lesson-notification.warning {
+                background: #fef3c7;
+                color: #92400e;
+                border-left: 4px solid #f59e0b;
+            }
+            
+            .lesson-notification.error {
+                background: #fee2e2;
+                color: #991b1b;
+                border-left: 4px solid #ef4444;
+            }
+            
+            .lesson-notification.success {
+                background: #d1fae5;
+                color: #065f46;
+                border-left: 4px solid #10b981;
+            }
+            
+            @keyframes slideIn {
+                from { transform: translateX(100%); opacity: 0; }
+                to { transform: translateX(0); opacity: 1; }
+            }
+        `;
+        document.head.appendChild(style);
+    }
+    
+    document.body.appendChild(notification);
+    
+    // Remove after 5 seconds
+    setTimeout(() => {
+        notification.style.animation = 'slideOut 0.3s ease';
+        setTimeout(() => notification.remove(), 300);
+    }, 5000);
 }
 
 function showFeedback(questionNum, isCorrect) {
