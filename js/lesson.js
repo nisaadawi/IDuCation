@@ -342,9 +342,26 @@ function nextQuestion() {
     if (currentQuestion < totalQuestions) {
         currentQuestion++;
         showQuestion(currentQuestion);
+        
+        // Use SimpleFaceRecognition to ensure camera is active during lesson
+        if (window.simpleFaceRecognition && 
+            !window.simpleFaceRecognition.isCameraActive && 
+            !window.simpleFaceRecognition.isLessonCompleted) {
+            window.simpleFaceRecognition.startCamera();
+        }
     } else {
         // All questions completed
         showCompletionScreen();
+        
+        // Stop camera when lesson ends
+        if (window.simpleFaceRecognition) {
+            window.simpleFaceRecognition.isLessonCompleted = true;
+            window.simpleFaceRecognition.stopCamera();
+        }
+        
+        // Dispatch lesson completed event
+        const event = new Event('lessonCompleted');
+        document.dispatchEvent(event);
     }
 }
 
@@ -379,7 +396,7 @@ function showCompletionScreen() {
         questionContainer.style.display = 'none';
         completionScreen.style.display = 'flex';
         
-        // Calculate XP based on module
+       // Calculate XP based on module
         const moduleXP = currentModule ? currentModule.xpReward : 50;
         const finalXP = Math.round((correctAnswers / totalQuestions) * moduleXP);
         
@@ -401,6 +418,15 @@ function showCompletionScreen() {
         if (currentModule) {
             saveModuleProgress(finalXP);
         }
+                
+        // Stop camera when lesson ends
+        if (window.simpleFaceRecognition) {
+            window.simpleFaceRecognition.stopCamera();
+        }
+        
+        // Dispatch event for face recognition system
+        const event = new Event('lessonCompleted');
+        document.dispatchEvent(event);
     }
 }
 
@@ -428,4 +454,3 @@ function saveModuleProgress(xpEarned) {
 
 // Make checkFillBlank available globally
 window.checkFillBlank = checkFillBlank;
-

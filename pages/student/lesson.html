@@ -11,6 +11,7 @@
     <link rel="stylesheet" href="../../css/main.css">
     <link rel="stylesheet" href="../../css/student-dashboard.css">
     <link rel="stylesheet" href="../../css/lesson.css">
+
 </head>
 <body class="student-page">
     <!-- Sidebar Navigation -->
@@ -381,11 +382,82 @@
                 </div>
             </div>
         </div>
+        
     </main>
 
+            <!-- Face Recognition Bubble - SIMPLE VERSION -->
+        <div class="face-recognition-bubble" id="faceRecognitionBubble">
+            <button class="bubble-toggle" id="bubbleToggle">
+                <i class="fas fa-camera"></i>
+                <div class="bubble-status" id="bubbleStatus"></div>
+            </button>
+            
+            <div class="bubble-container" id="bubbleContainer">
+                <div class="face-recognition-header">
+                    <h4>Student Verification</h4>
+                    <div class="camera-status" id="cameraStatus">Inactive</div>
+                </div>
+                
+                <div class="video-container">
+                    <video id="faceVideo" autoplay playsinline></video>
+                    <div class="video-overlay" id="videoOverlay">
+                        <i class="fas fa-user"></i>
+                        <span>Camera is off</span>
+                    </div>
+                    <canvas id="faceCanvas" style="display: none;"></canvas>
+                </div>
+                
+                <div class="face-match-info">
+                    <div class="face-match-status" id="faceMatchStatus"></div>
+                    <div class="face-match-text" id="faceMatchText">Camera ready</div>
+                </div>
+                
+                <div class="reference-photo">
+                    <h5>Expected Student</h5>
+                    <img src="../../assets/students_photo/irdina.jpg" alt="Student" class="reference-img" id="referenceImg">
+                    <p style="font-size: 0.8rem; margin-top: 0.5rem;">You (Student)</p>
+                </div>
+                
+                <div class="face-recognition-controls">
+                    <button class="face-btn face-btn-primary" id="startCameraBtn">
+                        <i class="fas fa-play"></i>
+                        Start Camera
+                    </button>
+                    <button class="face-btn face-btn-secondary" id="stopCameraBtn">
+                        <i class="fas fa-stop"></i>
+                        Stop
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Camera Permission Prompt -->
+        <div class="camera-permission-prompt" id="cameraPermissionPrompt" style="display: none;">
+            <div class="permission-content">
+                <div class="permission-icon">
+                    <i class="fas fa-camera"></i>
+                </div>
+                <h3>Camera Access</h3>
+                <p>We need to verify you're the student working on this lesson. Camera will be active only during the lesson.</p>
+                <div class="permission-actions">
+                    <button class="btn-primary" id="allowCameraBtn">
+                        <i class="fas fa-check"></i>
+                        Allow Camera
+                    </button>
+                    <button class="btn-secondary" id="denyCameraBtn">
+                        <i class="fas fa-times"></i>
+                        Deny
+                    </button>
+                </div>
+            </div>
+        </div>
+
     <script src="../../js/modules.js"></script>
+    <script src="../../js/face-api.min.js"></script>
+    <script src="../../js/face-detection.js"></script>
     <script src="../../js/lesson.js"></script>
     <script src="../../js/student-dashboard.js"></script>
+
 </body>
 </html>
 
