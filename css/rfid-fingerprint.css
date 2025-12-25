@@ -1,0 +1,89 @@
+/* RFID + Fingerprint Login Styles */
+
+.rfid-fp-status {
+    padding: 1rem 1.5rem;
+    border-radius: 12px;
+    margin-bottom: 1.5rem;
+    display: flex;
+    align-items: center;
+    gap: 0.8rem;
+    font-size: 0.95rem;
+    animation: slideIn 0.3s ease;
+    box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+}
+
+.rfid-fp-status.info {
+    background: linear-gradient(135deg, #2253e6, #00cc85);
+    color: white;
+}
+
+.rfid-fp-status.success {
+    background: linear-gradient(135deg, #00cc85, #00aa6c);
+    color: white;
+}
+
+.rfid-fp-status.error {
+    background: linear-gradient(135deg, #ff4444, #cc0000);
+    color: white;
+}
+
+.rfid-fp-status.loading {
+    background: linear-gradient(135deg, #667eea, #764ba2);
+    color: white;
+}
+
+.rfid-fp-status i {
+    font-size: 1.2rem;
+}
+
+.rfid-fp-status span {
+    flex: 1;
+}
+
+.rfid-fp-btn {
+    margin-top: 0.5rem;
+    width: 100%;
+    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    border: none;
+    color: white;
+    padding: 1rem;
+    border-radius: 12px;
+    font-weight: 600;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 0.5rem;
+}
+
+.rfid-fp-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(102, 126, 234, 0.4);
+}
+
+.rfid-fp-btn:active {
+    transform: translateY(0);
+}
+
+.rfid-fp-btn i {
+    font-size: 1.2rem;
+}
+
+@keyframes slideIn {
+    from {
+        opacity: 0;
+        transform: translateY(-10px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Hide regular input when using RFID + Fingerprint */
+.hide-input .input-wrapper {
+    display: none !important;
+}
+
