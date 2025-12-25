@@ -1831,6 +1831,232 @@ body.student-page {
     display: none;
 }
 
+/* Year Progress Section */
+.year-progress-section {
+    margin: 2rem 0;
+    padding: 0 16px;
+}
+
+.year-progress-cards {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 1.5rem;
+    margin-top: 1.5rem;
+}
+
+.year-progress-card {
+    background: var(--white);
+    border-radius: 20px;
+    padding: 1.5rem;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+    border: 2px solid rgba(34, 83, 230, 0.1);
+    transition: var(--transition);
+}
+
+.year-progress-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+}
+
+.year-progress-card.unlocked {
+    border-left: 4px solid var(--green);
+}
+
+.year-progress-card.locked {
+    border-left: 4px solid var(--text-light);
+    opacity: 0.7;
+}
+
+.year-progress-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.year-number {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    font-size: 1.25rem;
+    font-weight: 700;
+    color: var(--dark-blue);
+}
+
+.year-number i {
+    font-size: 1.5rem;
+    color: var(--green);
+}
+
+.year-progress-card.locked .year-number i {
+    color: var(--text-light);
+}
+
+.status-badge {
+    padding: 0.4rem 0.8rem;
+    border-radius: 8px;
+    font-size: 0.8rem;
+    font-weight: 600;
+}
+
+.status-badge.unlocked {
+    background: rgba(0, 204, 133, 0.1);
+    color: var(--green);
+}
+
+.status-badge.locked {
+    background: rgba(113, 128, 150, 0.1);
+    color: var(--text-light);
+}
+
+.year-progress-bar-container {
+    margin-bottom: 0.75rem;
+}
+
+.year-progress-bar {
+    width: 100%;
+    height: 12px;
+    background: rgba(34, 83, 230, 0.1);
+    border-radius: 10px;
+    overflow: hidden;
+    margin-bottom: 0.5rem;
+}
+
+.year-progress-fill {
+    height: 100%;
+    background: linear-gradient(90deg, var(--blue), var(--green));
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.year-progress-card.locked .year-progress-fill {
+    background: var(--text-light);
+}
+
+.year-progress-text {
+    font-size: 0.85rem;
+    color: var(--text-light);
+    font-weight: 500;
+    text-align: center;
+}
+
+.year-unlock-requirement {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem;
+    background: rgba(253, 208, 0, 0.1);
+    border: 2px solid rgba(253, 208, 0, 0.3);
+    border-radius: 8px;
+    margin-top: 0.75rem;
+    font-size: 0.85rem;
+    color: #f39c12;
+    font-weight: 500;
+}
+
+.year-unlock-requirement i {
+    font-size: 1rem;
+}
+
+/* Subject Filter Tabs */
+.subject-filter-section {
+    margin: 2rem 0;
+    padding: 0 16px;
+}
+
+.subject-tabs {
+    display: flex;
+    gap: 1rem;
+    flex-wrap: wrap;
+    justify-content: center;
+    margin-bottom: 1.5rem;
+}
+
+.subject-tab {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+    padding: 0.75rem 1.5rem;
+    border: 2px solid rgba(34, 83, 230, 0.2);
+    border-radius: 12px;
+    background: var(--white);
+    color: var(--text-light);
+    font-size: 0.9rem;
+    font-weight: 600;
+    cursor: pointer;
+    transition: var(--transition);
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.05);
+}
+
+.subject-tab:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    border-color: var(--blue);
+}
+
+.subject-tab.active {
+    background: linear-gradient(135deg, var(--blue), var(--green));
+    color: var(--white);
+    border-color: var(--blue);
+    box-shadow: 0 4px 15px rgba(34, 83, 230, 0.3);
+}
+
+.subject-tab i {
+    font-size: 1rem;
+}
+
+/* Section Header with Stats */
+.section-header-modules {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    flex-wrap: wrap;
+    gap: 1rem;
+}
+
+.module-stats {
+    font-size: 0.9rem;
+    color: var(--text-light);
+    font-weight: 500;
+    padding: 0.5rem 1rem;
+    background: rgba(34, 83, 230, 0.08);
+    border-radius: 8px;
+}
+
+/* Empty State */
+.empty-state {
+    text-align: center;
+    padding: 3rem 1rem;
+    margin: 2rem 0;
+}
+
+.empty-icon {
+    width: 100px;
+    height: 100px;
+    margin: 0 auto 1.5rem;
+    background: linear-gradient(135deg, rgba(34, 83, 230, 0.1), rgba(0, 204, 133, 0.1));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 3rem;
+    color: var(--text-light);
+}
+
+.empty-state h3 {
+    font-size: 1.5rem;
+    color: var(--dark-blue);
+    margin-bottom: 0.5rem;
+}
+
+.empty-state p {
+    color: var(--text-light);
+    font-size: 1rem;
+    max-width: 400px;
+    margin: 0 auto;
+}
+
 .lessons-section {
     margin-bottom: 2rem;
 }
@@ -1961,8 +2187,49 @@ body.student-page {
     font-size: 0.9rem;
     color: var(--text-light);
     text-align: center;
-    margin-bottom: 1.25rem;
+    margin-bottom: 1rem;
     line-height: 1.5;
+}
+
+.lesson-meta {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    margin-bottom: 1rem;
+    flex-wrap: wrap;
+}
+
+.lesson-meta span {
+    display: flex;
+    align-items: center;
+    gap: 0.3rem;
+    font-size: 0.75rem;
+    color: var(--text-light);
+    background: rgba(34, 83, 230, 0.08);
+    padding: 0.3rem 0.6rem;
+    border-radius: 8px;
+    font-weight: 500;
+}
+
+.lesson-meta .lesson-year {
+    background: rgba(34, 83, 230, 0.12);
+    color: var(--blue);
+    font-weight: 600;
+}
+
+.lesson-meta .lesson-time {
+    background: rgba(155, 89, 182, 0.12);
+    color: #9B59B6;
+}
+
+.lesson-meta .lesson-xp {
+    background: rgba(253, 208, 0, 0.15);
+    color: #f39c12;
+}
+
+.lesson-meta i {
+    font-size: 0.7rem;
 }
 
 .lesson-progress {
@@ -2415,6 +2682,24 @@ body.student-page {
     .lessons-grid,
     .rewards-grid {
         grid-template-columns: 1fr;
+    }
+
+    .subject-tabs {
+        justify-content: flex-start;
+        overflow-x: auto;
+        padding-bottom: 0.5rem;
+    }
+
+    .subject-tab {
+        white-space: nowrap;
+        flex-shrink: 0;
+        padding: 0.6rem 1rem;
+        font-size: 0.85rem;
+    }
+
+    .section-header-modules {
+        flex-direction: column;
+        align-items: flex-start;
     }
 
     .points-card-large {

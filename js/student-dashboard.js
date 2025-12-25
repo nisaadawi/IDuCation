@@ -195,3 +195,295 @@ style.textContent = `
 `;
 document.head.appendChild(style);
 
+// ==================== MODULE SYSTEM INTEGRATION ====================
+// Load modules dynamically from modules.js
+
+let currentSubjectFilter = 'all';
+let allVisibleModules = [];
+
+function loadModulesIntoPage(subjectFilter = 'all') {
+    // Check if we're on the learn page and modules.js is loaded
+    if (typeof KSSRModules === 'undefined') {
+        console.warn('KSSRModules not loaded yet');
+        setTimeout(() => loadModulesIntoPage(subjectFilter), 100);
+        return;
+    }
+
+    const lessonsGrid = document.getElementById('lessonsGrid') || document.querySelector('.lessons-grid');
+    if (!lessonsGrid) return;
+
+    // Get completed modules from localStorage
+    const completedModules = KSSRModules.getCompletedModules();
+    
+    // Show ALL modules so students can see what's available (locked modules will be marked as locked)
+    let visibleModules = KSSRModules.modules;
+    
+    // Store for filtering
+    allVisibleModules = visibleModules;
+    
+    // Filter by subject if not 'all'
+    if (subjectFilter && subjectFilter !== 'all') {
+        visibleModules = visibleModules.filter(m => m.subject === subjectFilter);
+    }
+    
+    // Clear existing content
+    lessonsGrid.innerHTML = '';
+
+    // Update empty state
+    const emptyState = document.getElementById('emptyState');
+    if (emptyState) {
+        emptyState.style.display = visibleModules.length === 0 ? 'block' : 'none';
+    }
+
+    // Update module count
+    const moduleCount = document.getElementById('moduleCount');
+    if (moduleCount) {
+        moduleCount.textContent = `${visibleModules.length} module${visibleModules.length !== 1 ? 's' : ''} available`;
+    }
+
+    // Update title
+    const modulesTitle = document.getElementById('modulesTitle');
+    if (modulesTitle && subjectFilter !== 'all') {
+        const subjectInfo = KSSRModules.subjects[subjectFilter];
+        if (subjectInfo) {
+            modulesTitle.textContent = subjectInfo.name + ' Modules';
+        }
+    } else if (modulesTitle) {
+        modulesTitle.textContent = 'All Modules';
+    }
+
+    // Sort modules: unlocked first, then by year level, then by subject
+    visibleModules.sort((a, b) => {
+        const aCompleted = completedModules.includes(a.id);
+        const bCompleted = completedModules.includes(b.id);
+        const aInProgress = !aCompleted && KSSRModules.getModuleProgress(a.id).questionsAnswered > 0;
+        const bInProgress = !bCompleted && KSSRModules.getModuleProgress(b.id).questionsAnswered > 0;
+        
+        // Priority: Completed < In Progress < Not Started
+        if (aCompleted !== bCompleted) {
+            return aCompleted ? -1 : 1;
+        }
+        if (aInProgress !== bInProgress) {
+            return aInProgress ? -1 : 1;
+        }
+        
+        // Then by year level
+        if (a.yearLevel !== b.yearLevel) {
+            return a.yearLevel - b.yearLevel;
+        }
+        
+        // Then alphabetically
+        return a.title.localeCompare(b.title);
+    });
+
+    // Generate module cards
+    visibleModules.forEach(module => {
+        const progress = KSSRModules.getModuleProgress(module.id);
+        const isCompleted = completedModules.includes(module.id);
+        
+        // Check if year level is unlocked (prevents year skipping)
+        const yearUnlocked = KSSRModules.isYearUnlocked(module.yearLevel, completedModules);
+        
+        // Check if module prerequisites are met
+        const prerequisitesMet = module.unlocked || 
+            (module.prerequisites && module.prerequisites.every(prereq => completedModules.includes(prereq)));
+        
+        // Module is locked if year is not unlocked OR prerequisites not met
+        const isLocked = !yearUnlocked || !prerequisitesMet;
+        
+        const progressPercent = isCompleted ? 100 : 
+            (progress.questionsAnswered / module.totalQuestions) * 100;
+        
+        // Get year progress info for locked modules
+        const yearProgress = KSSRModules.getYearProgress(module.yearLevel - 1, completedModules);
+        const modulesNeeded = KSSRModules.getModulesNeededForNextYear(module.yearLevel - 1, completedModules);
+
+        const subjectInfo = KSSRModules.subjects[module.subject];
+        const iconClass = getIconClass(module.icon, subjectInfo?.icon);
+
+        const moduleCard = document.createElement('div');
+        moduleCard.className = `lesson-card ${isCompleted ? 'completed' : isLocked ? 'locked' : progress.questionsAnswered > 0 ? 'in-progress' : ''}`;
+        moduleCard.innerHTML = `
+            <div class="lesson-status">
+                <i class="fas fa-${isCompleted ? 'check-circle' : isLocked ? 'lock' : 'play-circle'}"></i>
+            </div>
+            <div class="lesson-icon" style="background: ${subjectInfo?.color || '#4A90E2'}20; color: ${subjectInfo?.color || '#4A90E2'};">
+                <i class="fas fa-${iconClass}"></i>
+            </div>
+            <h3>${module.title}</h3>
+            <p>${module.description}</p>
+            <div class="lesson-meta">
+                <span class="lesson-year">Year ${module.yearLevel}</span>
+                <span class="lesson-time"><i class="fas fa-clock"></i> ${module.estimatedTime}</span>
+                <span class="lesson-xp"><i class="fas fa-coins"></i> ${module.xpReward} XP</span>
+            </div>
+            <div class="lesson-progress">
+                <div class="lesson-progress-bar">
+                    <div class="lesson-progress-fill" style="width: ${progressPercent}%"></div>
+                </div>
+                <span>${isCompleted ? '100% Complete' : isLocked ? (!yearUnlocked && module.yearLevel > 1 ? `Complete ${modulesNeeded} more Year ${module.yearLevel - 1} modules` : 'Complete prerequisites') : progressPercent > 0 ? Math.round(progressPercent) + '% Complete' : 'Not Started'}</span>
+            </div>
+            <button class="lesson-btn ${isCompleted ? 'review-btn' : isLocked ? 'locked-btn' : 'start-btn'}" 
+                    ${isLocked ? 'disabled' : ''} 
+                    onclick="startModuleLesson('${module.id}')">
+                <i class="fas fa-${isCompleted ? 'redo' : isLocked ? 'lock' : 'play'}"></i>
+                ${isCompleted ? 'Review' : isLocked ? 'Locked' : progress.questionsAnswered > 0 ? 'Continue' : 'Start'}
+            </button>
+        `;
+
+        lessonsGrid.appendChild(moduleCard);
+    });
+
+    // Update module count in header if exists
+    updateModuleStats();
+    
+    // Load year progress overview
+    loadYearProgress();
+}
+
+function loadYearProgress() {
+    if (typeof KSSRModules === 'undefined') return;
+    
+    const yearProgressCards = document.getElementById('yearProgressCards');
+    if (!yearProgressCards) return;
+    
+    const completedModules = KSSRModules.getCompletedModules();
+    const maxYear = Math.max(...KSSRModules.modules.map(m => m.yearLevel));
+    
+    yearProgressCards.innerHTML = '';
+    
+    // Show progress for each year
+    for (let year = 1; year <= maxYear; year++) {
+        const progress = KSSRModules.getYearProgress(year, completedModules);
+        const isUnlocked = KSSRModules.isYearUnlocked(year, completedModules);
+        const isNextYearLocked = year < maxYear && !KSSRModules.isYearUnlocked(year + 1, completedModules);
+        const modulesNeeded = year < maxYear ? KSSRModules.getModulesNeededForNextYear(year, completedModules) : 0;
+        
+        const yearCard = document.createElement('div');
+        yearCard.className = `year-progress-card ${isUnlocked ? 'unlocked' : 'locked'}`;
+        yearCard.innerHTML = `
+            <div class="year-progress-header">
+                <div class="year-number">
+                    <i class="fas fa-${isUnlocked ? 'check-circle' : 'lock'}"></i>
+                    <span>Year ${year}</span>
+                </div>
+                <div class="year-status">
+                    ${isUnlocked ? '<span class="status-badge unlocked">Unlocked</span>' : '<span class="status-badge locked">Locked</span>'}
+                </div>
+            </div>
+            <div class="year-progress-bar-container">
+                <div class="year-progress-bar">
+                    <div class="year-progress-fill" style="width: ${progress.percentage}%"></div>
+                </div>
+                <div class="year-progress-text">
+                    <span>${progress.completed} / ${progress.total} modules completed (${progress.percentage}%)</span>
+                </div>
+            </div>
+            ${isNextYearLocked && modulesNeeded > 0 ? `
+                <div class="year-unlock-requirement">
+                    <i class="fas fa-info-circle"></i>
+                    <span>Complete ${modulesNeeded} more module${modulesNeeded !== 1 ? 's' : ''} to unlock Year ${year + 1}</span>
+                </div>
+            ` : ''}
+        `;
+        
+        yearProgressCards.appendChild(yearCard);
+    }
+}
+
+function filterModulesBySubject(subject) {
+    currentSubjectFilter = subject;
+    
+    // Update active tab
+    const tabs = document.querySelectorAll('.subject-tab');
+    tabs.forEach(tab => {
+        if (tab.getAttribute('data-subject') === subject) {
+            tab.classList.add('active');
+        } else {
+            tab.classList.remove('active');
+        }
+    });
+    
+    // Reload modules with filter
+    loadModulesIntoPage(subject);
+}
+
+function getIconClass(moduleIcon, subjectIcon) {
+    const iconMap = {
+        'hashtag': 'hashtag',
+        'plus-minus': 'plus',
+        'plus': 'plus',
+        'minus': 'minus',
+        'times': 'times',
+        'divide': 'divide',
+        'shapes': 'shapes',
+        'language': 'language',
+        'book-reader': 'book-reader',
+        'spell-check': 'spell-check',
+        'book-open': 'book-open',
+        'leaf': 'leaf',
+        'tree': 'tree',
+        'flask': 'flask',
+        'calculator': 'calculator',
+        'book': 'book',
+        'paint-brush': 'paint-brush',
+        'percent': 'percent',
+        'pen': 'pen',
+        'pen-fancy': 'pen-alt',
+        'atom': 'atom',
+        'brain': 'brain',
+        'globe': 'globe'
+    };
+    
+    return iconMap[moduleIcon] || subjectIcon || 'book';
+}
+
+function startModuleLesson(moduleId) {
+    // Store current module in sessionStorage for lesson page
+    sessionStorage.setItem('currentModuleId', moduleId);
+    
+    // Navigate to lesson page
+    window.location.href = 'lesson.html?module=' + moduleId;
+}
+
+function updateModuleStats() {
+    if (typeof KSSRModules === 'undefined') return;
+    
+    const completedModules = KSSRModules.getCompletedModules();
+    const totalXP = KSSRModules.getTotalXP();
+    
+    // Update XP in header
+    const xpValue = document.querySelector('.xp-value');
+    if (xpValue) {
+        xpValue.textContent = totalXP.toLocaleString();
+    }
+    
+    // Update module count if elements exist
+    const moduleCountEls = document.querySelectorAll('.stat-number');
+    moduleCountEls.forEach(el => {
+        const label = el.nextElementSibling;
+        if (label && label.textContent.includes('Modules')) {
+            el.textContent = completedModules.length;
+        }
+    });
+}
+
+// Load modules when page loads (for learn.html)
+if (document.querySelector('.lessons-grid') || document.getElementById('lessonsGrid')) {
+    // Wait for DOM and modules.js to be ready
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            // Wait a bit for modules.js to load
+            setTimeout(() => loadModulesIntoPage('all'), 100);
+        });
+    } else {
+        // DOM already loaded
+        setTimeout(() => loadModulesIntoPage('all'), 100);
+    }
+}
+
+// Make functions globally available
+window.startModuleLesson = startModuleLesson;
+window.loadModulesIntoPage = loadModulesIntoPage;
+window.filterModulesBySubject = filterModulesBySubject;
+

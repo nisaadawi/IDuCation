@@ -250,151 +250,73 @@
                 </div>
             </section>
 
+            <!-- Year Progress Overview -->
+            <section class="year-progress-section">
+                <h2 class="section-title-visual">
+                    <i class="fas fa-graduation-cap"></i>
+                    Year Progress
+                </h2>
+                <div class="year-progress-cards" id="yearProgressCards">
+                    <!-- Year progress cards will be loaded dynamically -->
+                </div>
+            </section>
+
+            <!-- Subject Filter Tabs -->
+            <section class="subject-filter-section">
+                <div class="subject-tabs">
+                    <button class="subject-tab active" data-subject="all" onclick="filterModulesBySubject('all')">
+                        <i class="fas fa-th"></i>
+                        <span>All Subjects</span>
+                    </button>
+                    <button class="subject-tab" data-subject="mathematics" onclick="filterModulesBySubject('mathematics')">
+                        <i class="fas fa-calculator"></i>
+                        <span>Mathematics</span>
+                    </button>
+                    <button class="subject-tab" data-subject="english" onclick="filterModulesBySubject('english')">
+                        <i class="fas fa-language"></i>
+                        <span>English</span>
+                    </button>
+                    <button class="subject-tab" data-subject="bahasaMelayu" onclick="filterModulesBySubject('bahasaMelayu')">
+                        <i class="fas fa-book"></i>
+                        <span>Bahasa Melayu</span>
+                    </button>
+                    <button class="subject-tab" data-subject="science" onclick="filterModulesBySubject('science')">
+                        <i class="fas fa-flask"></i>
+                        <span>Science</span>
+                    </button>
+                </div>
+            </section>
+
             <!-- Lessons Grid -->
             <section class="lessons-section">
-                <h2 class="section-title-visual">
-                    <i class="fas fa-book-open"></i>
-                    All Modules
-                </h2>
+                <div class="section-header-modules">
+                    <h2 class="section-title-visual">
+                        <i class="fas fa-book-open"></i>
+                        <span id="modulesTitle">All Modules</span>
+                    </h2>
+                    <div class="module-stats">
+                        <span id="moduleCount">0 modules available</span>
+                    </div>
+                </div>
                 
-                <div class="lessons-grid">
-                    <!-- Lesson Card 1 -->
-                    <div class="lesson-card completed">
-                        <div class="lesson-status">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="lesson-icon">
-                            <i class="fas fa-language"></i>
-                        </div>
-                        <h3>English Basics</h3>
-                        <p>Learn simple words and sentences</p>
-                        <div class="lesson-progress">
-                            <div class="lesson-progress-bar">
-                                <div class="lesson-progress-fill" style="width: 100%"></div>
-                            </div>
-                            <span>100% Complete</span>
-                        </div>
-                        <button class="lesson-btn review-btn">
-                            <i class="fas fa-redo"></i>
-                            Review
-                        </button>
-                    </div>
+                <div class="lessons-grid" id="lessonsGrid">
+                    <!-- Modules will be loaded here dynamically from modules.js -->
+                </div>
 
-                    <!-- Lesson Card 2 -->
-                    <div class="lesson-card completed">
-                        <div class="lesson-status">
-                            <i class="fas fa-check-circle"></i>
-                        </div>
-                        <div class="lesson-icon">
-                            <i class="fas fa-calculator"></i>
-                        </div>
-                        <h3>Math Basics</h3>
-                        <p>Numbers, addition, and subtraction</p>
-                        <div class="lesson-progress">
-                            <div class="lesson-progress-bar">
-                                <div class="lesson-progress-fill" style="width: 100%"></div>
-                            </div>
-                            <span>100% Complete</span>
-                        </div>
-                        <button class="lesson-btn review-btn">
-                            <i class="fas fa-redo"></i>
-                            Review
-                        </button>
+                <!-- Empty State -->
+                <div class="empty-state" id="emptyState" style="display: none;">
+                    <div class="empty-icon">
+                        <i class="fas fa-book-open"></i>
                     </div>
-
-                    <!-- Lesson Card 3 - In Progress -->
-                    <div class="lesson-card in-progress">
-                        <div class="lesson-status">
-                            <i class="fas fa-play-circle"></i>
-                        </div>
-                        <div class="lesson-icon">
-                            <i class="fas fa-book-open"></i>
-                        </div>
-                        <h3>English Basics - Module 5</h3>
-                        <p>Reading simple stories</p>
-                        <div class="lesson-progress">
-                            <div class="lesson-progress-bar">
-                                <div class="lesson-progress-fill" style="width: 60%"></div>
-                            </div>
-                            <span>60% Complete</span>
-                        </div>
-                        <button class="lesson-btn start-btn" onclick="window.location.href='lesson.html'">
-                            <i class="fas fa-play"></i>
-                            Continue
-                        </button>
-                    </div>
-
-                    <!-- Lesson Card 4 - Locked -->
-                    <div class="lesson-card locked">
-                        <div class="lesson-status">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <div class="lesson-icon">
-                            <i class="fas fa-pen"></i>
-                        </div>
-                        <h3>Writing Skills</h3>
-                        <p>Learn to write sentences</p>
-                        <div class="lesson-progress">
-                            <div class="lesson-progress-bar">
-                                <div class="lesson-progress-fill" style="width: 0%"></div>
-                            </div>
-                            <span>Complete previous module</span>
-                        </div>
-                        <button class="lesson-btn locked-btn" disabled>
-                            <i class="fas fa-lock"></i>
-                            Locked
-                        </button>
-                    </div>
-
-                    <!-- Lesson Card 5 - Locked -->
-                    <div class="lesson-card locked">
-                        <div class="lesson-status">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <div class="lesson-icon">
-                            <i class="fas fa-globe"></i>
-                        </div>
-                        <h3>Science Basics</h3>
-                        <p>Learn about nature and animals</p>
-                        <div class="lesson-progress">
-                            <div class="lesson-progress-bar">
-                                <div class="lesson-progress-fill" style="width: 0%"></div>
-                            </div>
-                            <span>Complete previous module</span>
-                        </div>
-                        <button class="lesson-btn locked-btn" disabled>
-                            <i class="fas fa-lock"></i>
-                            Locked
-                        </button>
-                    </div>
-
-                    <!-- Lesson Card 6 - Locked -->
-                    <div class="lesson-card locked">
-                        <div class="lesson-status">
-                            <i class="fas fa-lock"></i>
-                        </div>
-                        <div class="lesson-icon">
-                            <i class="fas fa-paint-brush"></i>
-                        </div>
-                        <h3>Art & Creativity</h3>
-                        <p>Express yourself through art</p>
-                        <div class="lesson-progress">
-                            <div class="lesson-progress-bar">
-                                <div class="lesson-progress-fill" style="width: 0%"></div>
-                            </div>
-                            <span>Complete previous module</span>
-                        </div>
-                        <button class="lesson-btn locked-btn" disabled>
-                            <i class="fas fa-lock"></i>
-                            Locked
-                        </button>
-                    </div>
+                    <h3>No modules found</h3>
+                    <p>Try selecting a different subject or complete prerequisites to unlock more modules.</p>
                 </div>
             </section>
         </div>
     </main>
 
 
+    <script src="../../js/modules.js"></script>
     <script src="../../js/student-dashboard.js"></script>
 </body>
 </html>
