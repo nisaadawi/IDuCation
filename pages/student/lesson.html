@@ -385,7 +385,6 @@
         
     </main>
 
-            <!-- Face Recognition Bubble - SIMPLE VERSION -->
         <div class="face-recognition-bubble" id="faceRecognitionBubble">
             <button class="bubble-toggle" id="bubbleToggle">
                 <i class="fas fa-camera"></i>
@@ -416,17 +415,6 @@
                     <h5>Expected Student</h5>
                     <img src="../../assets/students_photo/irdina.jpg" alt="Student" class="reference-img" id="referenceImg">
                     <p style="font-size: 0.8rem; margin-top: 0.5rem;">You (Student)</p>
-                </div>
-                
-                <div class="face-recognition-controls">
-                    <button class="face-btn face-btn-primary" id="startCameraBtn">
-                        <i class="fas fa-play"></i>
-                        Start Camera
-                    </button>
-                    <button class="face-btn face-btn-secondary" id="stopCameraBtn">
-                        <i class="fas fa-stop"></i>
-                        Stop
-                    </button>
                 </div>
             </div>
         </div>
@@ -460,8 +448,26 @@
             <i class="fas fa-user-lock"></i>
             <h2>Unauthorized User Detected</h2>
             <p>The system detected that you are not the registered student for this account. The quiz has been disabled.</p>
-            <p>Please switch back to the verified student to continue.</p>
-            <div class="face-match-status unmatched">NOT VERIFIED</div>
+            <hr class="separator-line">
+            <p2>Please switch back to the verified student to continue.</p2>
+        </div>
+
+        <!-- Loading Screen -->
+        <div class="loading-screen" id="loadingScreen">
+            <div class="loading-content">
+                <div class="spinner">
+                    <i class="fas fa-brain"></i>
+                    <div class="spinner-ring"></div>
+                </div>
+                <h2>Setting Up Lesson</h2>
+                <p class="loading-message" id="loadingMessage">Loading AI models...</p>
+                <div class="loading-progress">
+                    <div class="loading-progress-bar" id="loadingProgress"></div>
+                </div>
+                <div class="loading-details">
+                    <p><i class="fas fa-info-circle"></i> Please wait while we load the face recognition system</p>
+                </div>
+            </div>
         </div>
 
     <script src="../../js/modules.js"></script>

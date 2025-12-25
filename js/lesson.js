@@ -9,6 +9,8 @@ let answeredQuestions = new Set();
 let currentModule = null;
 let moduleQuestions = [];
 let quizEnabled = true;
+let lastNotificationState = null;
+
 
 document.addEventListener('DOMContentLoaded', function() {
     // Try to load module from URL or sessionStorage
@@ -185,18 +187,46 @@ function initializeLesson() {
 
 function setupEventListeners() {
 
-    document.addEventListener('quizStateChange', function(e) {
-        quizEnabled = e.detail.enabled;
-        
-        if (!quizEnabled) {
-            // Disable all interactive elements
-            disableAllQuizElements();
-        } else {
-            // Re-enable all interactive elements
-            enableAllQuizElements();
-        }
+    document.addEventListener('lessonStarted', () => {
+        console.log('Lesson started - enabling quiz');
+        quizEnabled = true;
+        enableAllQuizElements();
     });
     
+    // Handle quiz state changes from face recognition
+    document.addEventListener('quizStateChange', function(e) {
+        const newState = e.detail.enabled;
+        
+        // Only show notification when state actually changes
+        if (lastNotificationState !== newState) {
+            quizEnabled = newState;
+            
+            if (!quizEnabled) {
+                disableAllQuizElements();
+                showNotification('Quiz disabled. Please verify your identity.', 'warning');
+            } else {
+                enableAllQuizElements();
+                // Only show if explicitly from verification (not initial load)
+                if (e.detail.fromVerification) {
+                    showNotification('Quiz enabled. You can now answer questions.', 'success');
+                }
+            }
+            
+            lastNotificationState = newState;
+        } else {
+            // State didn't change, just update the internal variable
+            quizEnabled = newState;
+        }
+    });
+
+    
+    // Initial quiz state - disabled until verified
+    quizEnabled = false;
+    disableAllQuizElements();
+    
+    // Show initial message
+    showNotification('Please wait for student verification before starting the quiz.', 'info');
+        
     // Use event delegation for dynamically loaded questions
     document.addEventListener('click', function(e) {
         const answerOption = e.target.closest('.answer-option[data-correct]');
@@ -207,6 +237,19 @@ function setupEventListeners() {
             handleAnswer(answerOption, isCorrect);
         }
     });
+}
+
+// Call this in initializeLesson()
+function initializeLesson() {
+    // Set initial progress
+    updateProgress();
+    updateQuestionCounter();
+    
+    // Show first question but keep it disabled
+    showQuestion(1);
+    
+    // Initial state - quiz disabled
+    disableAllQuizElements();
 }
 
 function disableAllQuizElements() {
