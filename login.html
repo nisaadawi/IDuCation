@@ -10,6 +10,11 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="css/main.css">
     <link rel="stylesheet" href="css/premium-login.css">
+    <link rel="stylesheet" href="css/rfid-fingerprint.css">
+    
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
 </head>
 <body>
     <!-- Navigation -->
@@ -56,7 +61,7 @@
                 <div class="login-visual">
                     <div class="smart-id-display">
                         <div class="smart-id-wrapper">
-                            <img src="assets/iducation.png" alt="Smart ID Card" class="smart-id-image">
+                            <img src="assets/images/Iducation-product-prototype.png" alt="Smart ID Card" class="smart-id-image">
                             <div class="fingerprint-glow"></div>
                         </div>
                         <div class="nfc-pulse"></div>
@@ -123,10 +128,7 @@
                                         </div>
                                     </div>
                                     <div class="input-actions">
-                                        <button type="button" class="scan-btn modern-scan-btn" id="scan-student">
-                                            <i class="fas fa-qrcode"></i>
-                                            <span>Tap</span>
-                                        </button>
+                                        <!-- RFID + Fingerprint button will be added here by JavaScript -->
                                     </div>
                                 </div>
 
@@ -136,30 +138,63 @@
                             <form class="login-form" id="teacher-form">
                                 <div class="form-group floating-label-group">
                                     <div class="input-wrapper">
-                                        <i class="input-icon fas fa-id-card"></i>
+                                        <i class="input-icon fas fa-user"></i>
                                         <input 
                                             type="text" 
-                                            id="teacher-id" 
+                                            id="teacher-username" 
                                             class="floating-input"
                                             placeholder=" "
                                             required
-                                            pattern="[0-9A-Za-z]{8,}"
+                                            autocomplete="username"
                                         >
                                         <label class="floating-label">
-                                            <i class="fas fa-fingerprint"></i>
-                                            Teacher Smart ID Number
+                                            Username
                                         </label>
-                                        <div class="avatar-preview" id="teacher-avatar" style="display: none;">
-                                            <i class="fas fa-user-tie"></i>
-                                        </div>
                                     </div>
-                                    <div class="input-actions">
-                                        <button type="button" class="scan-btn modern-scan-btn" id="scan-teacher">
-                                            <i class="fas fa-qrcode"></i>
-                                            <span>Tap</span>
+                                </div>
+
+                                <div class="form-group floating-label-group">
+                                    <div class="input-wrapper">
+                                        <i class="input-icon fas fa-lock"></i>
+                                        <input 
+                                            type="password" 
+                                            id="teacher-password" 
+                                            class="floating-input"
+                                            placeholder=" "
+                                            required
+                                            autocomplete="current-password"
+                                        >
+                                        <label class="floating-label">
+                                            Password
+                                        </label>
+                                        <button type="button" class="password-toggle" id="toggleTeacherPassword">
+                                            <i class="fas fa-eye"></i>
                                         </button>
                                     </div>
                                 </div>
+
+                                <div class="form-options">
+                                    <label class="toggle-switch">
+                                        <input type="checkbox" id="remember-teacher">
+                                        <!--<span class="toggle-slider"></span>-->
+                                        <!--<span class="toggle-label">Remember me</span>-->
+                                    </label>
+                                    <a href="#" class="help-link" data-tooltip="Contact system administrator">
+                                        <i class="fas fa-question-circle"></i>
+                                        <span>Help</span>
+                                    </a>
+                                </div>
+
+                                <button type="submit" class="btn-login premium-btn">
+                                    <span class="btn-content">
+                                        <i class="fas fa-sign-in-alt"></i>
+                                        <span>Login</span>
+                                    </span>
+                                    <div class="btn-loading" style="display: none;">
+                                        <i class="fas fa-spinner fa-spin"></i>
+                                        <span>Authenticating...</span>
+                                    </div>
+                                </button>
                             </form>
                         </div>
                     </div>
@@ -187,5 +222,7 @@
     </div>
 
     <script src="js/main.js"></script>
+    <script src="js/rfid-fingerprint-login.js"></script>
+    <script src="js/teacher-login.js"></script>
 </body>
 </html>

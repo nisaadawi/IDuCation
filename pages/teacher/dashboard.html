@@ -1316,47 +1316,11 @@
                                 <p id="currentTime">9:30 AM</p>
             </div>
                         </div>
-                        <div class="class-today-badge">
+                        <div class="class-today-badge" id="classTodayBadge">
                             <i class="fas fa-chalkboard"></i>
                             <span>Class Today - English & Mathematics</span>
                         </div>
                     </div>
-
-                    <!-- Attendance Summary -->
-                    <div class="attendance-summary-card">
-                        <div class="attendance-summary-header">
-                            <h3>
-                                <i class="fas fa-clipboard-list"></i>
-                                Today's Attendance Summary
-                            </h3>
-                </div>
-                        <div class="attendance-stats-grid">
-                            <div class="attendance-stat-item present">
-                                <div class="attendance-stat-number">18</div>
-                                <div class="attendance-stat-label">
-                                    <i class="fas fa-check-circle"></i> Present
-                </div>
-            </div>
-                            <div class="attendance-stat-item absent">
-                                <div class="attendance-stat-number">4</div>
-                                <div class="attendance-stat-label">
-                                    <i class="fas fa-times-circle"></i> Absent
-                </div>
-                </div>
-                            <div class="attendance-stat-item late">
-                                <div class="attendance-stat-number">2</div>
-                                <div class="attendance-stat-label">
-                                    <i class="fas fa-clock"></i> Late
-            </div>
-                </div>
-                </div>
-                        <div class="progress-bar-container">
-                            <div class="progress-bar">
-                                <div class="progress-fill" style="width: 75%"></div>
-            </div>
-                            <span class="progress-text">75% Attendance Rate (18/24)</span>
-                </div>
-                </div>
 
                     <!-- Interactive Map -->
                     <div class="map-container" style="margin-bottom: 2rem;">
@@ -1364,7 +1328,7 @@
             </div>
 
                     <!-- Location Status Section -->
-                    <div class="location-status-section">
+                    <div class="location-status-section" id="locationStatusSection">
                         <div class="location-status-header">
                             <h3>
                                 <i class="fas fa-map-marked-alt"></i>
@@ -1372,6 +1336,16 @@
                             </h3>
                 </div>
                         <div class="location-status-list">
+                            <div class="location-status-item" id="nurAisyahStatus">
+                                <div class="location-status-icon coming" id="nurAisyahIcon">
+                                    <i class="fas fa-walking"></i>
+                                </div>
+                                <div class="location-status-info">
+                                    <h4>Nur Aisyah</h4>
+                                    <p id="nurAisyahStatusText">Checking location...</p>
+                                </div>
+                                <span class="location-status-badge coming" id="nurAisyahBadge">Moving</span>
+                            </div>
                             <div class="location-status-item">
                                 <div class="location-status-icon at-class">
                                     <i class="fas fa-check"></i>
@@ -1459,6 +1433,42 @@
                 </button>
             </div>
             </div>
+
+                    <!-- Today's Attendance Summary -->
+                    <div class="attendance-summary-card" id="attendanceSummaryCard">
+                        <div class="attendance-summary-header">
+                            <h3>
+                                <i class="fas fa-clipboard-list"></i>
+                                Today's Attendance Summary
+                            </h3>
+                        </div>
+                        <div class="attendance-stats-grid">
+                            <div class="attendance-stat-item present">
+                                <div class="attendance-stat-number">18</div>
+                                <div class="attendance-stat-label">
+                                    <i class="fas fa-check-circle"></i> Present
+                                </div>
+                            </div>
+                            <div class="attendance-stat-item absent">
+                                <div class="attendance-stat-number">4</div>
+                                <div class="attendance-stat-label">
+                                    <i class="fas fa-times-circle"></i> Absent
+                                </div>
+                            </div>
+                            <div class="attendance-stat-item late">
+                                <div class="attendance-stat-number">2</div>
+                                <div class="attendance-stat-label">
+                                    <i class="fas fa-clock"></i> Late
+                                </div>
+                            </div>
+                        </div>
+                        <div class="progress-bar-container">
+                            <div class="progress-bar">
+                                <div class="progress-fill" style="width: 75%"></div>
+                            </div>
+                            <span class="progress-text">75% Attendance Rate (18/24)</span>
+                        </div>
+                    </div>
 
                     <!-- Real-Time Attendance Tracking -->
                     <div class="attendance-summary-card">
@@ -2166,6 +2176,9 @@
     </main>
 
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-database-compat.js"></script>
     <script src="../../js/teacher.js"></script>
     <script>
         // Search functionality for Progress tab
@@ -2338,147 +2351,53 @@
         updateDateTime();
         setInterval(updateDateTime, 60000);
 
-        // Initialize Student Location Map
+        // Firebase configuration for GPS tracking (matches GPS_NEO-6M_sensor.ino)
+        // To get your API key: Firebase Console → gps-tracking-644a4 → Project Settings → General → Your apps → Web app
+        const firebaseConfig = {
+            apiKey: "AIzaSyBWNb_rtgwZhpXL0dGPL88wV5lYJzL42hQ", // Update this from Firebase Console
+            authDomain: "gps-tracking-644a4.firebaseapp.com",
+            databaseURL: "https://gps-tracking-644a4-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "gps-tracking-644a4"
+        };
+
+        // Initialize Firebase
+        let firebaseApp, firebaseDatabase;
+        if (typeof firebase !== 'undefined') {
+            if (!firebase.apps.length) {
+                firebaseApp = firebase.initializeApp(firebaseConfig);
+            } else {
+                firebaseApp = firebase.app();
+            }
+            firebaseDatabase = firebase.database();
+            console.log('Firebase initialized for GPS tracking');
+            console.log('Firebase Database URL:', firebaseConfig.databaseURL);
+        }
+
+        // Initialize Student Location Map with Firebase GPS data
+        let studentMap, gpsMarker, mapInitialized = false;
+        
+        // GPS movement tracking for Nur Aisyah
+        let lastGPSLat = null;
+        let lastGPSLng = null;
+        let lastMovementTime = null;
+        let movementCheckInterval = null;
+        const MOVEMENT_THRESHOLD = 0.0001; // Threshold for detecting movement (approximately 11 meters)
+        const STATIONARY_TIME_MS = 60000; // 1 minute in milliseconds
+
         function initializeStudentMap() {
-            // Initialize map centered on Gerik, Perak, Malaysia
-            const schoolLat = 5.4167;   // Gerik, Perak latitude
-            const schoolLng = 101.1333; // Gerik, Perak longitude
-            const map = L.map('studentMap').setView([schoolLat, schoolLng], 14); // Zoom level 14 for rural area view
+            // Initialize map - will center on GPS location when available
+            const defaultLat = 6.462924;   // Universiti Utara Malaysia (UUM), Sintok, Kedah latitude
+            const defaultLng = 100.505279; // Universiti Utara Malaysia (UUM), Sintok, Kedah longitude
+            
+            studentMap = L.map('studentMap').setView([defaultLat, defaultLng], 14);
             
             // Add OpenStreetMap tiles
             L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
                 attribution: '© OpenStreetMap contributors',
                 maxZoom: 19
-            }).addTo(map);
+            }).addTo(studentMap);
 
-            // Student location data with coordinates relative to rural school location
-            const studentLocations = [
-                {
-                    name: 'Ahmad Hassan',
-                    id: 'STU001',
-                    lat: schoolLat,  // At school
-                    lng: schoolLng,
-                    status: 'at-class',
-                    location: 'Room 101, Building A',
-                    icon: 'check',
-                    color: '#00cc85'
-                },
-                {
-                    name: 'Siti Aminah',
-                    id: 'STU002',
-                    lat: schoolLat + 0.002,  // ~200m away
-                    lng: schoolLng + 0.002,
-                    status: 'coming',
-                    location: '200m away - Approaching from village',
-                    icon: 'walking',
-                    color: '#fdd000'
-                },
-                {
-                    name: 'Fatimah Nor',
-                    id: 'STU004',
-                    lat: schoolLat + 0.005,  // ~500m away
-                    lng: schoolLng + 0.003,
-                    status: 'coming',
-                    location: '500m away - On the way from farm area',
-                    icon: 'walking',
-                    color: '#fdd000'
-                },
-                {
-                    name: 'Mohammad Razak',
-                    id: 'STU003',
-                    lat: schoolLat + 0.015,  // ~1.5km away at home
-                    lng: schoolLng + 0.010,
-                    status: 'not-coming',
-                    location: 'At Home - Village area, Not coming today',
-                    icon: 'home',
-                    color: '#ff4444'
-                },
-                {
-                    name: 'Ismail Saleh',
-                    id: 'STU005',
-                    lat: schoolLat,  // At school
-                    lng: schoolLng,
-                    status: 'at-class',
-                    location: 'Room 101, Building A',
-                    icon: 'check',
-                    color: '#00cc85'
-                },
-                {
-                    name: 'Razak Kamal',
-                    id: 'STU006',
-                    lat: null,
-                    lng: null,
-                    status: 'unknown',
-                    location: 'Location unavailable',
-                    icon: 'question',
-                    color: '#718096'
-                }
-            ];
-
-            // Create custom icon function
-            function createCustomIcon(color, iconType) {
-                const iconMap = {
-                    'check': '✓',
-                    'walking': '→',
-                    'home': '⌂',
-                    'question': '?'
-                };
-
-                return L.divIcon({
-                    className: 'custom-marker',
-                    html: `<div style="
-                        background-color: ${color};
-                        width: 40px;
-                        height: 40px;
-                        border-radius: 50%;
-                        display: flex;
-                        align-items: center;
-                        justify-content: center;
-                        color: white;
-                        font-weight: bold;
-                        font-size: 18px;
-                        border: 3px solid white;
-                        box-shadow: 0 2px 8px rgba(0,0,0,0.3);
-                    ">${iconMap[iconType] || '?'}</div>`,
-                    iconSize: [40, 40],
-                    iconAnchor: [20, 40],
-                    popupAnchor: [0, -40]
-                });
-            }
-
-            // Add markers for each student
-            studentLocations.forEach(student => {
-                if (student.lat && student.lng) {
-                    const marker = L.marker([student.lat, student.lng], {
-                        icon: createCustomIcon(student.color, student.icon)
-                    }).addTo(map);
-
-                    // Add popup with student information
-                    marker.bindPopup(`
-                        <div style="text-align: center; min-width: 200px;">
-                            <h3 style="margin: 0 0 10px 0; color: ${student.color}; font-size: 1.1rem;">${student.name}</h3>
-                            <p style="margin: 5px 0; color: #666; font-size: 0.9rem;"><strong>ID:</strong> ${student.id}</p>
-                            <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">${student.location}</p>
-                            <span style="
-                                display: inline-block;
-                                padding: 5px 12px;
-                                border-radius: 15px;
-                                background: ${student.color}20;
-                                color: ${student.color};
-                                font-size: 0.85rem;
-                                font-weight: 600;
-                                margin-top: 8px;
-                            ">
-                                ${student.status === 'at-class' ? 'At Class' : 
-                                  student.status === 'coming' ? 'Coming' : 
-                                  student.status === 'not-coming' ? 'Not Coming' : 'Unknown'}
-                            </span>
-                        </div>
-                    `);
-                }
-            });
-
-            // Add school/class location marker (larger, different style)
+            // Add school/class location marker (larger, different style) - fixed location
             const schoolIcon = L.divIcon({
                 className: 'school-marker',
                 html: `<div style="
@@ -2499,17 +2418,559 @@
                 popupAnchor: [0, -50]
             });
 
-            const schoolMarker = L.marker([schoolLat, schoolLng], { icon: schoolIcon }).addTo(map);
-            schoolMarker.bindPopup('<strong>Rural School/Campus</strong><br>Main Building<br>Community Learning Center');
+            const schoolMarker = L.marker([defaultLat, defaultLng], { icon: schoolIcon }).addTo(studentMap);
+            schoolMarker.bindPopup('<strong>Universiti Utara Malaysia (UUM)</strong><br>Sultanah Bahiyah Campus<br>Sintok, Kedah, Malaysia');
 
-            return map;
+            mapInitialized = true;
+
+            // Check if class is scheduled before starting GPS tracking
+            if (firebaseDatabase) {
+                checkClassScheduleAndStartGPS();
+            } else {
+                console.error('Firebase database not initialized');
+            }
+
+            return studentMap;
         }
+
+        // Hardcoded class schedule (days and times)
+        const classSchedule = [
+            // Format: { day: 0-6 (Sunday=0, Monday=1, etc.), startTime: "HH:MM", endTime: "HH:MM" }
+            { day: 1, startTime: "09:00", endTime: "11:00", subject: "English & Mathematics" }, // Monday
+            { day: 2, startTime: "09:00", endTime: "11:00", subject: "English & Mathematics" }, // Tuesday
+            { day: 3, startTime: "14:00", endTime: "16:00", subject: "Science & Arts" },         // Wednesday
+            { day: 4, startTime: "09:00", endTime: "11:00", subject: "English & Mathematics" }, // Thursday
+            { day: 5, startTime: "12:00", endTime: "12:30", subject: "English & Mathematics" }, // Friday
+            // No classes on Saturday (5) and Sunday (0)
+        ];
+
+        // Check if today has any scheduled class (regardless of current time)
+        function getTodayClassSchedule() {
+            const now = new Date();
+            const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+            
+            // Find all classes scheduled for today
+            const todayClasses = classSchedule.filter(schedule => schedule.day === currentDay);
+            
+            return todayClasses;
+        }
+
+        // Check if current time is within any scheduled class
+        function isClassTime() {
+            const now = new Date();
+            const currentDay = now.getDay(); // 0 = Sunday, 1 = Monday, ..., 6 = Saturday
+            const currentTime = now.getHours() * 100 + now.getMinutes(); // Format: HHMM (e.g., 930 for 9:30)
+            
+            for (const schedule of classSchedule) {
+                if (schedule.day === currentDay) {
+                    const [startHour, startMin] = schedule.startTime.split(':').map(Number);
+                    const [endHour, endMin] = schedule.endTime.split(':').map(Number);
+                    const startTime = startHour * 100 + startMin;
+                    const endTime = endHour * 100 + endMin;
+                    
+                    if (currentTime >= startTime && currentTime <= endTime) {
+                        // Calculate remaining minutes correctly
+                        const currentMinutes = now.getHours() * 60 + now.getMinutes();
+                        const endMinutes = endHour * 60 + endMin;
+                        const remainingMinutes = endMinutes - currentMinutes;
+                        
+                        return { 
+                            isClassTime: true, 
+                            schedule: schedule,
+                            remainingMinutes: remainingMinutes
+                        };
+                    }
+                }
+            }
+            
+            return { isClassTime: false };
+        }
+
+        // Update dashboard based on today's class schedule
+        function updateDashboardForToday() {
+            const todayClasses = getTodayClassSchedule();
+            const classBadge = document.getElementById('classTodayBadge');
+            const attendanceCard = document.getElementById('attendanceSummaryCard');
+            const locationSection = document.getElementById('locationStatusSection');
+            
+            if (todayClasses.length === 0) {
+                // No class today - update badge and hide sections
+                if (classBadge) {
+                    classBadge.innerHTML = '<i class="fas fa-calendar-times"></i><span>No class for today</span>';
+                    classBadge.style.background = 'rgba(255, 68, 68, 0.2)';
+                    classBadge.style.borderColor = 'rgba(255, 68, 68, 0.3)';
+                }
+                
+                // Hide attendance summary
+                if (attendanceCard) {
+                    attendanceCard.style.display = 'none';
+                }
+                
+                // Hide location status section
+                if (locationSection) {
+                    locationSection.style.display = 'none';
+                }
+            } else {
+                // Has class today - show sections and update badge
+                const firstClass = todayClasses[0];
+                let classText = `Class Today - ${firstClass.subject} (${firstClass.startTime} - ${firstClass.endTime})`;
+                
+                // If multiple classes, show all with times
+                if (todayClasses.length > 1) {
+                    const classInfo = todayClasses.map(c => `${c.subject} (${c.startTime}-${c.endTime})`).join(' & ');
+                    classText = `Classes Today - ${classInfo}`;
+                }
+                
+                if (classBadge) {
+                    classBadge.innerHTML = `<i class="fas fa-chalkboard"></i><span>${classText}</span>`;
+                    classBadge.style.background = 'rgba(255, 255, 255, 0.2)';
+                    classBadge.style.borderColor = 'rgba(255, 255, 255, 0.3)';
+                }
+                
+                // Show attendance summary
+                if (attendanceCard) {
+                    attendanceCard.style.display = 'block';
+                }
+                
+                // Show location status section
+                if (locationSection) {
+                    locationSection.style.display = 'block';
+                }
+            }
+        }
+
+        // Check schedule and start/stop GPS tracking accordingly
+        let gpsListenerRef = null;
+        function checkClassScheduleAndStartGPS() {
+            const classStatus = isClassTime();
+            
+            if (classStatus.isClassTime) {
+                console.log('Class is in session. Starting GPS tracking...');
+                console.log(`Subject: ${classStatus.schedule.subject}, Time: ${classStatus.schedule.startTime} - ${classStatus.schedule.endTime}`);
+                console.log(`Remaining time: ${classStatus.remainingMinutes} minutes`);
+                
+                // Start GPS tracking if not already started
+                if (!gpsListenerRef) {
+                    startGPSListening();
+                }
+                
+                // Show status message
+                showGPSTrackingStatus(true, classStatus.schedule, classStatus.remainingMinutes);
+            } else {
+                console.log('No class scheduled at this time. GPS tracking disabled.');
+                
+                // Stop GPS tracking if it's running
+                if (gpsListenerRef) {
+                    stopGPSListening();
+                }
+                
+                // Show disabled message
+                showGPSTrackingStatus(false);
+                
+                // Remove GPS marker if exists
+                if (gpsMarker) {
+                    studentMap.removeLayer(gpsMarker);
+                    gpsMarker = null;
+                }
+            }
+        }
+
+        // Show GPS tracking status message on map
+        function showGPSTrackingStatus(isActive, schedule = null, remainingMinutes = 0) {
+            // Remove existing status if any
+            const existingStatus = document.getElementById('gps-tracking-status');
+            if (existingStatus) {
+                existingStatus.remove();
+            }
+            
+            const statusDiv = document.createElement('div');
+            statusDiv.id = 'gps-tracking-status';
+            statusDiv.style.cssText = `
+                position: absolute;
+                top: 10px;
+                right: 10px;
+                z-index: 1000;
+                background: ${isActive ? 'linear-gradient(135deg, #00cc85, #00b374)' : 'linear-gradient(135deg, #ff6b6b, #ee5a52)'};
+                color: white;
+                padding: 15px 20px;
+                border-radius: 12px;
+                box-shadow: 0 4px 15px rgba(0,0,0,0.2);
+                font-family: var(--font-primary);
+                max-width: 300px;
+            `;
+            
+            if (isActive && schedule) {
+                const hours = Math.floor(remainingMinutes / 60);
+                const minutes = remainingMinutes % 60;
+                statusDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-map-marker-alt" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong style="font-size: 1rem;">GPS Tracking Active</strong>
+                            <p style="margin: 5px 0 0 0; font-size: 0.85rem; opacity: 0.9;">
+                                ${schedule.subject}<br>
+                                ${schedule.startTime} - ${schedule.endTime} | ${hours}h ${minutes}m remaining
+                            </p>
+                        </div>
+                    </div>
+                `;
+            } else {
+                statusDiv.innerHTML = `
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <i class="fas fa-ban" style="font-size: 1.5rem;"></i>
+                        <div>
+                            <strong style="font-size: 1rem;">GPS Tracking Disabled</strong>
+                            <p style="margin: 5px 0 0 0; font-size: 0.85rem; opacity: 0.9;">
+                                No class scheduled at this time
+                            </p>
+                        </div>
+                    </div>
+                `;
+            }
+            
+            const mapContainer = document.getElementById('studentMap');
+            if (mapContainer) {
+                mapContainer.parentElement.style.position = 'relative';
+                mapContainer.parentElement.appendChild(statusDiv);
+            }
+        }
+
+        // Listen to GPS location updates from Firebase
+        function startGPSListening() {
+            if (!firebaseDatabase) {
+                console.error('Firebase database not available');
+                return;
+            }
+
+            const gpsRef = firebaseDatabase.ref('/gps/location');
+            console.log('Listening to Firebase GPS path: /gps/location');
+            
+            gpsRef.on('value', (snapshot) => {
+                const gpsData = snapshot.val();
+                console.log('GPS data received:', gpsData);
+                
+                if (gpsData && gpsData.latitude && gpsData.longitude && gpsData.locationValid !== false) {
+                    const lat = parseFloat(gpsData.latitude);
+                    const lng = parseFloat(gpsData.longitude);
+                    
+                    console.log('GPS Update:', lat, lng);
+                    
+                    // Create or update GPS marker
+                    if (!gpsMarker) {
+                        // Create GPS marker if it doesn't exist
+                        const gpsIcon = L.divIcon({
+                            className: 'gps-marker',
+                            html: `<div style="
+                                background: linear-gradient(135deg, #ff4444, #ff6666);
+                                width: 45px;
+                                height: 45px;
+                                border-radius: 50%;
+                                display: flex;
+                                align-items: center;
+                                justify-content: center;
+                                color: white;
+                                font-weight: bold;
+                                font-size: 20px;
+                                border: 3px solid white;
+                                box-shadow: 0 2px 8px rgba(255,68,68,0.5);
+                                animation: pulse 2s infinite;
+                            ">👩🏻‍🎓</div>
+                            <style>
+                                @keyframes pulse {
+                                    0% { box-shadow: 0 2px 8px rgba(255,68,68,0.5); }
+                                    50% { box-shadow: 0 2px 20px rgba(255,68,68,0.8); }
+                                    100% { box-shadow: 0 2px 8px rgba(255,68,68,0.5); }
+                                }
+                            </style>`,
+                            iconSize: [45, 45],
+                            iconAnchor: [22.5, 45],
+                            popupAnchor: [0, -45]
+                        });
+                        
+                        gpsMarker = L.marker([lat, lng], { icon: gpsIcon }).addTo(studentMap);
+                        
+                        // Add hover events to show popup on hover (only once when marker is created)
+                        gpsMarker.on('mouseover', function() {
+                            this.openPopup();
+                        });
+                        
+                        gpsMarker.on('mouseout', function() {
+                            this.closePopup();
+                        });
+                    } else {
+                        // Update existing marker position
+                        gpsMarker.setLatLng([lat, lng]);
+                    }
+                    
+                    // Add popup with GPS information (matching GPS_NEO-6M_sensor.ino data structure)
+                    const satellites = gpsData.satellites !== undefined ? gpsData.satellites : 'N/A';
+                    const altitude = gpsData.altitude !== undefined ? gpsData.altitude.toFixed(2) + ' m' : 'N/A';
+                    const speed = gpsData.speed !== undefined ? gpsData.speed.toFixed(2) + ' km/h' : 'N/A';
+                    const course = gpsData.course !== undefined ? gpsData.course.toFixed(1) + '°' : 'N/A';
+                    const date = gpsData.date || 'N/A';
+                    const time = gpsData.time || 'N/A';
+                    
+                    // Format timestamp
+                    let timestamp = 'Unknown';
+                    if (gpsData.timestamp) {
+                        if (typeof gpsData.timestamp === 'number') {
+                            if (gpsData.timestamp > 1000000000000) {
+                                // Server timestamp in milliseconds
+                                timestamp = new Date(gpsData.timestamp).toLocaleString();
+                            } else {
+                                // Relative time (millis since Arduino started)
+                                const seconds = Math.floor(gpsData.timestamp / 1000);
+                                const minutes = Math.floor(seconds / 60);
+                                timestamp = minutes > 0 ? `${minutes}m ${seconds % 60}s ago` : `${seconds}s ago`;
+                            }
+                        }
+                    }
+                    
+                    // Create popup content
+                    const popupContent = `
+                        <div style="text-align: center; min-width: 240px;">
+                            <h3 style="margin: 0 0 10px 0; color: #ff4444; font-size: 1.1rem;">
+                                <i class="fas fa-map-marker-alt"></i> Live GPS Location
+                            </h3>
+                            <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">
+                                <strong>Latitude:</strong> ${lat.toFixed(6)}
+                            </p>
+                            <p style="margin: 5px 0; color: #666; font-size: 0.9rem;">
+                                <strong>Longitude:</strong> ${lng.toFixed(6)}
+                            </p>
+                            <hr style="margin: 8px 0; border: none; border-top: 1px solid #ddd;">
+                            <p style="margin: 4px 0; color: #666; font-size: 0.85rem;">
+                                <strong>Satellites:</strong> ${satellites} | <strong>Altitude:</strong> ${altitude}
+                            </p>
+                            <p style="margin: 4px 0; color: #666; font-size: 0.85rem;">
+                                <strong>Speed:</strong> ${speed} | <strong>Course:</strong> ${course}
+                            </p>
+                            <p style="margin: 4px 0; color: #666; font-size: 0.85rem;">
+                                <strong>Date:</strong> ${date} | <strong>Time (UTC):</strong> ${time}
+                            </p>
+                            <p style="margin: 8px 0 0 0; color: #999; font-size: 0.75rem; font-style: italic;">
+                                Last update: ${timestamp}
+                            </p>
+                        </div>
+                    `;
+                    
+                    // Update popup content with new GPS data
+                    gpsMarker.bindPopup(popupContent, { autoClose: false, closeOnClick: false });
+                    
+                    // Smoothly pan to GPS location (better UX than setView)
+                    if (gpsMarker) {
+                        studentMap.panTo([lat, lng]);
+                        // Adjust zoom if too far/close
+                        const currentZoom = studentMap.getZoom();
+                        if (currentZoom < 14) {
+                            studentMap.setZoom(16);
+                        }
+                    } else {
+                        studentMap.setView([lat, lng], 16);
+                    }
+                    
+                    // Update location status section if needed
+                    updateLocationStatus(lat, lng);
+                    
+                    // Start movement monitoring if not already started
+                    if (!movementCheckInterval) {
+                        startMovementMonitoring();
+                    }
+                } else {
+                    console.log('No valid GPS data available or location is invalid');
+                    // Remove marker if GPS data is invalid
+                    if (gpsMarker) {
+                        studentMap.removeLayer(gpsMarker);
+                        gpsMarker = null;
+                    }
+                }
+            }, (error) => {
+                console.error('Firebase GPS listener error:', error);
+                console.error('Error code:', error.code);
+                console.error('Error message:', error.message);
+            });
+            
+            // Store reference to listener
+            gpsListenerRef = gpsRef;
+        }
+
+        // Stop GPS listening
+        function stopGPSListening() {
+            if (gpsListenerRef) {
+                gpsListenerRef.off('value');
+                gpsListenerRef = null;
+                console.log('GPS tracking stopped (outside class hours)');
+            }
+            
+            // Stop movement monitoring
+            if (movementCheckInterval) {
+                clearInterval(movementCheckInterval);
+                movementCheckInterval = null;
+            }
+            
+            // Reset GPS tracking variables
+            lastGPSLat = null;
+            lastGPSLng = null;
+            lastMovementTime = null;
+            
+            // Update Nur Aisyah status to show no data
+            const statusIcon = document.getElementById('nurAisyahIcon');
+            const statusText = document.getElementById('nurAisyahStatusText');
+            const statusBadge = document.getElementById('nurAisyahBadge');
+            if (statusIcon && statusText && statusBadge) {
+                statusIcon.className = 'location-status-icon unknown';
+                statusIcon.innerHTML = '<i class="fas fa-question"></i>';
+                statusText.textContent = 'Location unavailable';
+                statusBadge.className = 'location-status-badge unknown';
+                statusBadge.textContent = 'Unknown';
+            }
+        }
+
+        // Update location status section based on GPS data
+        function updateLocationStatus(lat, lng) {
+            // Calculate distance from Universiti Utara Malaysia (UUM), Sintok, Kedah
+            const schoolLat = 6.4675;   // UUM latitude
+            const schoolLng = 100.5022; // UUM longitude
+            const distance = calculateDistance(lat, lng, schoolLat, schoolLng);
+            
+            console.log(`GPS Distance from UUM: ${distance.toFixed(2)} km`);
+            
+            // Check if Nur Aisyah is moving
+            updateNurAisyahMovementStatus(lat, lng);
+        }
+
+        // Update Nur Aisyah's movement status based on GPS data
+        function updateNurAisyahMovementStatus(lat, lng) {
+            const now = Date.now();
+            let isMoving = false;
+            
+            // Check if coordinates have changed significantly
+            if (lastGPSLat !== null && lastGPSLng !== null) {
+                const latDiff = Math.abs(lat - lastGPSLat);
+                const lngDiff = Math.abs(lng - lastGPSLng);
+                const distanceMoved = calculateDistance(lastGPSLat, lastGPSLng, lat, lng);
+                
+                // If moved more than threshold, consider it moving
+                if (distanceMoved > MOVEMENT_THRESHOLD || latDiff > MOVEMENT_THRESHOLD || lngDiff > MOVEMENT_THRESHOLD) {
+                    isMoving = true;
+                    lastMovementTime = now;
+                    lastGPSLat = lat;
+                    lastGPSLng = lng;
+                } else {
+                    // Not moving, check if stationary for 1 minute
+                    if (lastMovementTime !== null) {
+                        const timeSinceLastMovement = now - lastMovementTime;
+                        if (timeSinceLastMovement >= STATIONARY_TIME_MS) {
+                            isMoving = false;
+                        } else {
+                            // Still within 1 minute, consider it moving
+                            isMoving = true;
+                        }
+                    } else {
+                        // First reading, assume moving
+                        isMoving = true;
+                        lastMovementTime = now;
+                    }
+                }
+            } else {
+                // First GPS reading
+                lastGPSLat = lat;
+                lastGPSLng = lng;
+                lastMovementTime = now;
+                isMoving = true;
+            }
+            
+            // Update UI based on movement status
+            updateNurAisyahUI(isMoving);
+        }
+
+        // Update Nur Aisyah's UI elements
+        function updateNurAisyahUI(isMoving) {
+            const statusIcon = document.getElementById('nurAisyahIcon');
+            const statusText = document.getElementById('nurAisyahStatusText');
+            const statusBadge = document.getElementById('nurAisyahBadge');
+            
+            if (statusIcon && statusText && statusBadge) {
+                if (isMoving) {
+                    // Show moving status
+                    statusIcon.className = 'location-status-icon coming';
+                    statusIcon.innerHTML = '<i class="fas fa-walking"></i>';
+                    statusText.textContent = 'Aisyah is moving';
+                    statusBadge.className = 'location-status-badge coming';
+                    statusBadge.textContent = 'Moving';
+                } else {
+                    // Show not moving status
+                    statusIcon.className = 'location-status-icon unknown';
+                    statusIcon.innerHTML = '<i class="fas fa-pause-circle"></i>';
+                    statusText.textContent = 'Not moving';
+                    statusBadge.className = 'location-status-badge unknown';
+                    statusBadge.textContent = 'Not Moving';
+                }
+            }
+        }
+
+        // Start checking for stationary status
+        function startMovementMonitoring() {
+            // Clear existing interval if any
+            if (movementCheckInterval) {
+                clearInterval(movementCheckInterval);
+            }
+            
+            // Check every 10 seconds if still moving
+            movementCheckInterval = setInterval(function() {
+                if (lastGPSLat !== null && lastGPSLng !== null && lastMovementTime !== null) {
+                    const now = Date.now();
+                    const timeSinceLastMovement = now - lastMovementTime;
+                    
+                    // If no movement for 1 minute, update to not moving
+                    if (timeSinceLastMovement >= STATIONARY_TIME_MS) {
+                        updateNurAisyahUI(false);
+                    }
+                }
+            }, 10000); // Check every 10 seconds
+        }
+
+        // Calculate distance between two coordinates (Haversine formula)
+        function calculateDistance(lat1, lon1, lat2, lon2) {
+            const R = 6371; // Radius of the Earth in km
+            const dLat = (lat2 - lat1) * Math.PI / 180;
+            const dLon = (lon2 - lon1) * Math.PI / 180;
+            const a = 
+                Math.sin(dLat/2) * Math.sin(dLat/2) +
+                Math.cos(lat1 * Math.PI / 180) * Math.cos(lat2 * Math.PI / 180) *
+                Math.sin(dLon/2) * Math.sin(dLon/2);
+            const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+            return R * c;
+        }
+
+        // Check class schedule periodically (every minute)
+        setInterval(function() {
+            if (mapInitialized && firebaseDatabase) {
+                checkClassScheduleAndStartGPS();
+            }
+            // Update dashboard display based on today's schedule
+            updateDashboardForToday();
+        }, 60000); // Check every minute
 
         // Initialize map when page loads
         document.addEventListener('DOMContentLoaded', function() {
-            // Initialize map
-            if (document.getElementById('studentMap')) {
-                initializeStudentMap();
+            // Wait a moment for DOM to be fully ready, then update dashboard
+            setTimeout(function() {
+                updateDashboardForToday();
+            }, 100);
+            
+            // Wait for Firebase to be ready before initializing map
+            if (typeof firebase !== 'undefined') {
+                // Initialize map
+                if (document.getElementById('studentMap')) {
+                    initializeStudentMap();
+                }
+            } else {
+                console.error('Firebase SDK not loaded');
+                // Initialize map anyway with default location
+                if (document.getElementById('studentMap')) {
+                    initializeStudentMap();
+                }
             }
 
             // Animate progress bars on load

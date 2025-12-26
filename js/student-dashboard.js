@@ -119,21 +119,55 @@ function handleCheckIn() {
 
 // Lesson Path Functions
 function startLesson(lessonId) {
-    console.log('Starting lesson:', lessonId);
-    // Navigate to lesson page
-    if (lessonId === 5 || lessonId === '5') {
-        window.location.href = 'lesson.html';
+    if (typeof KSSRModules === 'undefined') {
+        showNotification('Loading modules...', 'info');
+        return;
+    }
+    
+    // Map lesson IDs to actual module IDs
+    // Based on unlocked modules: math_001, eng_001, bm_001, sci_001
+    const moduleMap = {
+        'start': 'math_001',  // First unlocked module
+        '1': 'math_001',
+        '2': 'eng_001',
+        '3': 'eng_001',  // English Basics
+        '4': 'bm_001',
+        '5': 'sci_001'
+    };
+    
+    const moduleId = moduleMap[lessonId] || moduleMap['start'];
+    const module = KSSRModules.getModuleById(moduleId);
+    
+    if (module) {
+        startModuleLesson(moduleId);
     } else {
-        showNotification('Starting lesson...', 'success');
-        // For other lessons, navigate to lesson page with ID
-        // window.location.href = `lesson.html?id=${lessonId}`;
+        showNotification('Module not found', 'info');
     }
 }
 
 function reviewLesson(lessonId) {
-    console.log('Reviewing lesson:', lessonId);
-    // Navigate to lesson review page
-    window.location.href = 'lesson.html?mode=review';
+    if (typeof KSSRModules === 'undefined') {
+        showNotification('Loading modules...', 'info');
+        return;
+    }
+    
+    // Map lesson IDs to actual module IDs for review
+    const moduleMap = {
+        '1': 'math_001',
+        '2': 'eng_001',
+        '3': 'eng_001',
+        '4': 'bm_001',
+        '5': 'sci_001'
+    };
+    
+    const moduleId = moduleMap[lessonId] || 'math_001';
+    const module = KSSRModules.getModuleById(moduleId);
+    
+    if (module) {
+        startModuleLesson(moduleId);
+    } else {
+        showNotification('Module not found', 'info');
+    }
 }
 
 // Simple notification system
@@ -446,6 +480,109 @@ function startModuleLesson(moduleId) {
     window.location.href = 'lesson.html?module=' + moduleId;
 }
 
+function getCurrentModuleInProgress() {
+    if (typeof KSSRModules === 'undefined') return null;
+    
+    let currentModule = null;
+    let highestProgress = 0;
+    let mostRecentDate = null;
+    let firstUnlockedModule = null;
+    
+    // Find module with progress but not completed
+    KSSRModules.modules.forEach(module => {
+        const progress = KSSRModules.getModuleProgress(module.id);
+        
+        // Track first unlocked module as fallback
+        if (!firstUnlockedModule && module.unlocked) {
+            firstUnlockedModule = module;
+        }
+        
+        // Check if module has progress but isn't completed
+        if (progress.questionsAnswered > 0 && !progress.completed) {
+            const progressPercent = (progress.questionsAnswered / module.totalQuestions) * 100;
+            const lastAttempt = progress.lastAttempt ? new Date(progress.lastAttempt) : null;
+            
+            // Prioritize by most recent, then by highest progress
+            if (!mostRecentDate || (lastAttempt && lastAttempt > mostRecentDate) || 
+                (lastAttempt && lastAttempt.getTime() === mostRecentDate.getTime() && progressPercent > highestProgress)) {
+                currentModule = module;
+                highestProgress = progressPercent;
+                mostRecentDate = lastAttempt;
+            }
+        }
+    });
+    
+    // If no module in progress, return first unlocked module
+    if (!currentModule) {
+        return firstUnlockedModule;
+    }
+    
+    return currentModule;
+}
+
+function loadContinueLearningModule() {
+    if (typeof KSSRModules === 'undefined') {
+        // Wait for modules.js to load
+        setTimeout(() => loadContinueLearningModule(), 100);
+        return;
+    }
+    
+    const currentModule = getCurrentModuleInProgress();
+    const continueSection = document.querySelector('.featured-module-card');
+    
+    if (!continueSection) return;
+    
+    if (currentModule) {
+        const progress = KSSRModules.getModuleProgress(currentModule.id);
+        const progressPercent = progress.questionsAnswered > 0 
+            ? Math.round((progress.questionsAnswered / currentModule.totalQuestions) * 100)
+            : 0;
+        const subjectInfo = KSSRModules.subjects[currentModule.subject];
+        
+        // Update module details
+        const moduleTitle = continueSection.querySelector('.module-details h4');
+        const moduleProgress = continueSection.querySelector('.module-progress');
+        const progressFill = continueSection.querySelector('.module-progress-fill');
+        const continueBtn = continueSection.querySelector('.continue-btn');
+        
+        if (moduleTitle) {
+            moduleTitle.textContent = `${subjectInfo?.name || currentModule.subject} - ${currentModule.title}`;
+        }
+        
+        if (moduleProgress) {
+            if (progressPercent > 0) {
+                moduleProgress.textContent = `${progressPercent}% Complete`;
+            } else {
+                moduleProgress.textContent = 'Not Started';
+            }
+        }
+        
+        if (progressFill) {
+            progressFill.style.width = `${progressPercent}%`;
+        }
+        
+        if (continueBtn) {
+            // Store module ID in data attribute for reference
+            continueBtn.setAttribute('data-module-id', currentModule.id);
+            
+            // Remove old onclick and add new one
+            continueBtn.removeAttribute('onclick');
+            continueBtn.onclick = function(e) {
+                e.preventDefault();
+                e.stopPropagation();
+                const moduleId = this.getAttribute('data-module-id') || currentModule.id;
+                
+                // Navigate to lesson page
+                sessionStorage.setItem('currentModuleId', moduleId);
+                window.location.href = `lesson.html?module=${moduleId}`;
+            };
+        }
+    } else {
+        // No module available - hide the section
+        continueSection.style.display = 'none';
+    }
+}
+
 function updateModuleStats() {
     if (typeof KSSRModules === 'undefined') return;
     
@@ -482,8 +619,21 @@ if (document.querySelector('.lessons-grid') || document.getElementById('lessonsG
     }
 }
 
+// Load continue learning module when on home page
+if (document.querySelector('.featured-module-card')) {
+    if (document.readyState === 'loading') {
+        document.addEventListener('DOMContentLoaded', function() {
+            setTimeout(() => loadContinueLearningModule(), 200);
+        });
+    } else {
+        setTimeout(() => loadContinueLearningModule(), 200);
+    }
+}
+
 // Make functions globally available
 window.startModuleLesson = startModuleLesson;
 window.loadModulesIntoPage = loadModulesIntoPage;
 window.filterModulesBySubject = filterModulesBySubject;
+window.getCurrentModuleInProgress = getCurrentModuleInProgress;
+window.loadContinueLearningModule = loadContinueLearningModule;
 

@@ -70,7 +70,7 @@
                 </div>
                 <div class="welcome-text">
                     <h2>Welcome Back!</h2>
-                    <p class="student-name">Ahmad</p>
+                    <p class="student-name">Nur Aisyah binti Abdul Jamil</p>
                 </div>
             </div>
             <div class="header-right">
@@ -128,12 +128,16 @@
                         <p>Use your Smart ID at partner stores to get help and support like:</p>
                         <div class="xp-benefits">
                             <div class="benefit-item">
+                                <i class="fas fa-seedling"></i>
+                                <span>Rice</span>
+                            </div>
+                            <div class="benefit-item">
                                 <i class="fas fa-book"></i>
                                 <span>School Supplies</span>
                             </div>
                             <div class="benefit-item">
-                                <i class="fas fa-utensils"></i>
-                                <span>Food Vouchers</span>
+                                <i class="fas fa-shopping-basket"></i>
+                                <span>Basic Food</span>
                             </div>
                             <div class="benefit-item">
                                 <i class="fas fa-wifi"></i>
@@ -153,19 +157,41 @@
                 </h2>
                 <p class="section-description">These rewards are already on your Smart ID. Show your Smart ID at any partner store to redeem them!</p>
 
-                <div class="rewards-grid">
-                    <!-- Reward Item 1 -->
+                <!-- Category Filter Tabs -->
+                <div class="reward-category-tabs">
+                    <button class="reward-category-tab active" data-category="groceries">
+                        <i class="fas fa-shopping-basket"></i>
+                        <span>Groceries</span>
+                    </button>
+                    <button class="reward-category-tab" data-category="education">
+                        <i class="fas fa-graduation-cap"></i>
+                        <span>Education</span>
+                    </button>
+                    <button class="reward-category-tab" data-category="other">
+                        <i class="fas fa-ellipsis-h"></i>
+                        <span>Other</span>
+                    </button>
+                </div>
+
+                <!-- Groceries Category -->
+                <div class="reward-category" data-category="groceries">
+                    <div class="rewards-grid">
+                    <!-- Reward Item 1: Beras (Rice) - Most Essential -->
                     <div class="reward-card-item active-reward">
                         <div class="reward-badge">
                             <i class="fas fa-check-circle"></i>
                             <span>On Smart ID</span>
                         </div>
-                        <div class="reward-image">
-                            <i class="fas fa-book"></i>
+                        <div class="reward-image" style="background: linear-gradient(135deg, #FFD700, #FFA500);">
+                            <i class="fas fa-seedling"></i>
                         </div>
                         <div class="reward-details">
-                            <h3>School Supplies Pack</h3>
-                            <p>Notebooks, pens, pencils</p>
+                            <h3>Rice 5kg</h3>
+                            <p>5kg subsidized rice voucher</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>500 XP</span>
+                            </div>
                             <div class="reward-info">
                                 <i class="fas fa-store"></i>
                                 <span>Available at partner stores</span>
@@ -177,7 +203,116 @@
                         </button>
                     </div>
 
-                    <!-- Reward Item 2 -->
+
+                    <!-- Reward Item 3: Pakej Makanan Asas (Basic Food Package) -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image" style="background: linear-gradient(135deg, #FF6B6B, #FF8E53);">
+                            <i class="fas fa-shopping-basket"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Basic Food Package</h3>
+                            <p>Rice, cooking oil, sugar, eggs</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>1,000 XP</span>
+                            </div>
+                            <div class="reward-info">
+                                <i class="fas fa-store"></i>
+                                <span>Available at partner stores</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Find Store
+                        </button>
+                    </div>
+
+                    <!-- Reward Item 4: Minyak Masak (Cooking Oil) -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image" style="background: linear-gradient(135deg, #FFD700, #FFA500);">
+                            <i class="fas fa-oil-can"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Cooking Oil 1kg</h3>
+                            <p>1kg cooking oil voucher</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>200 XP</span>
+                            </div>
+                            <div class="reward-info">
+                                <i class="fas fa-store"></i>
+                                <span>Available at partner stores</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Find Store
+                        </button>
+                    </div>
+
+                    <!-- Reward Item 5: Gula (Sugar) -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image" style="background: linear-gradient(135deg, #E8F5E9, #C8E6C9);">
+                            <i class="fas fa-cube"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Sugar 1kg</h3>
+                            <p>1kg sugar voucher</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>150 XP</span>
+                            </div>
+                            <div class="reward-info">
+                                <i class="fas fa-store"></i>
+                                <span>Available at partner stores</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Find Store
+                        </button>
+                    </div>
+
+                    <!-- Reward Item 6: Telur (Eggs) -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image" style="background: linear-gradient(135deg, #FFF9C4, #FFF59D);">
+                            <i class="fas fa-egg"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Eggs 30 pieces</h3>
+                            <p>30 eggs voucher</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>300 XP</span>
+                            </div>
+                            <div class="reward-info">
+                                <i class="fas fa-store"></i>
+                                <span>Available at partner stores</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Find Store
+                        </button>
+                    </div>
+
+                    <!-- Reward Item: Food Voucher -->
                     <div class="reward-card-item active-reward">
                         <div class="reward-badge">
                             <i class="fas fa-check-circle"></i>
@@ -189,6 +324,42 @@
                         <div class="reward-details">
                             <h3>Food Voucher</h3>
                             <p>RM 20 meal voucher</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>350 XP</span>
+                            </div>
+                            <div class="reward-info">
+                                <i class="fas fa-store"></i>
+                                <span>Available at partner stores</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-map-marker-alt"></i>
+                            Find Store
+                        </button>
+                    </div>
+                    </div>
+                </div>
+
+                <!-- Education Category -->
+                <div class="reward-category" data-category="education" style="display: none;">
+                    <div class="rewards-grid">
+                    <!-- Reward Item: School Supplies -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image">
+                            <i class="fas fa-book"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>School Supplies Pack</h3>
+                            <p>Notebooks, pens, pencils</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>300 XP</span>
+                            </div>
                             <div class="reward-info">
                                 <i class="fas fa-store"></i>
                                 <span>Available at partner stores</span>
@@ -200,30 +371,7 @@
                         </button>
                     </div>
 
-                    <!-- Reward Item 3 -->
-                    <div class="reward-card-item active-reward">
-                        <div class="reward-badge">
-                            <i class="fas fa-check-circle"></i>
-                            <span>On Smart ID</span>
-                        </div>
-                        <div class="reward-image">
-                            <i class="fas fa-wifi"></i>
-                        </div>
-                        <div class="reward-details">
-                            <h3>Internet Data</h3>
-                            <p>5GB mobile data</p>
-                            <div class="reward-info">
-                                <i class="fas fa-mobile-alt"></i>
-                                <span>Redeem via mobile app</span>
-                            </div>
-                        </div>
-                        <button class="redeem-btn view-btn">
-                            <i class="fas fa-mobile-alt"></i>
-                            Redeem Now
-                        </button>
-                    </div>
-
-                    <!-- Reward Item 4 -->
+                    <!-- Reward Item: School Uniform -->
                     <div class="reward-card-item active-reward">
                         <div class="reward-badge">
                             <i class="fas fa-check-circle"></i>
@@ -235,6 +383,10 @@
                         <div class="reward-details">
                             <h3>School Uniform</h3>
                             <p>Complete school uniform set</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>800 XP</span>
+                            </div>
                             <div class="reward-info">
                                 <i class="fas fa-store"></i>
                                 <span>Available at partner stores</span>
@@ -246,7 +398,7 @@
                         </button>
                     </div>
 
-                    <!-- Reward Item 5 -->
+                    <!-- Reward Item 10: School Shoes -->
                     <div class="reward-card-item active-reward">
                         <div class="reward-badge">
                             <i class="fas fa-check-circle"></i>
@@ -258,6 +410,10 @@
                         <div class="reward-details">
                             <h3>School Shoes</h3>
                             <p>Comfortable school shoes</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>600 XP</span>
+                            </div>
                             <div class="reward-info">
                                 <i class="fas fa-store"></i>
                                 <span>Available at partner stores</span>
@@ -269,7 +425,7 @@
                         </button>
                     </div>
 
-                    <!-- Reward Item 6 -->
+                    <!-- Reward Item: Learning Tablet (Locked) -->
                     <div class="reward-card-item">
                         <div class="reward-badge locked-badge">
                             <i class="fas fa-lock"></i>
@@ -281,6 +437,10 @@
                         <div class="reward-details">
                             <h3>Learning Tablet</h3>
                             <p>Educational tablet device</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>5,000 XP</span>
+                            </div>
                             <div class="reward-info">
                                 <i class="fas fa-info-circle"></i>
                                 <span>Coming soon</span>
@@ -291,6 +451,39 @@
                             Not Available
                         </button>
                     </div>
+                    </div>
+                </div>
+
+                <!-- Other Category -->
+                <div class="reward-category" data-category="other" style="display: none;">
+                    <div class="rewards-grid">
+                    <!-- Reward Item: Internet Data -->
+                    <div class="reward-card-item active-reward">
+                        <div class="reward-badge">
+                            <i class="fas fa-check-circle"></i>
+                            <span>On Smart ID</span>
+                        </div>
+                        <div class="reward-image">
+                            <i class="fas fa-wifi"></i>
+                        </div>
+                        <div class="reward-details">
+                            <h3>Internet Data</h3>
+                            <p>5GB mobile data</p>
+                            <div class="reward-xp-cost">
+                                <i class="fas fa-coins"></i>
+                                <span>400 XP</span>
+                            </div>
+                            <div class="reward-info">
+                                <i class="fas fa-mobile-alt"></i>
+                                <span>Redeem via mobile app</span>
+                            </div>
+                        </div>
+                        <button class="redeem-btn view-btn">
+                            <i class="fas fa-mobile-alt"></i>
+                            Redeem Now
+                        </button>
+                    </div>
+                    </div>
                 </div>
             </section>
         </div>
@@ -298,6 +491,32 @@
 
 
     <script src="../../js/student-dashboard.js"></script>
+    <script>
+        // Category tab switching
+        document.addEventListener('DOMContentLoaded', function() {
+            const categoryTabs = document.querySelectorAll('.reward-category-tab');
+            const categories = document.querySelectorAll('.reward-category');
+
+            categoryTabs.forEach(tab => {
+                tab.addEventListener('click', function() {
+                    const targetCategory = this.getAttribute('data-category');
+
+                    // Update active tab
+                    categoryTabs.forEach(t => t.classList.remove('active'));
+                    this.classList.add('active');
+
+                    // Show/hide categories
+                    categories.forEach(cat => {
+                        if (cat.getAttribute('data-category') === targetCategory) {
+                            cat.style.display = 'block';
+                        } else {
+                            cat.style.display = 'none';
+                        }
+                    });
+                });
+            });
+        });
+    </script>
 </body>
 </html>
 
