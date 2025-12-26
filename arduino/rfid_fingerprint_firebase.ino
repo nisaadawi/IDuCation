@@ -34,12 +34,15 @@
 #include "mbedtls/sha256.h"  // For proper SHA256 hashing
  
  // WiFi Credentials
- #define WIFI_SSID ""
- #define WIFI_PASSWORD ""
+ // Replace with your WiFi network credentials
+ #define WIFI_SSID "YOUR_WIFI_SSID"
+ #define WIFI_PASSWORD "YOUR_WIFI_PASSWORD"
  
 // Firebase Configuration
-const char* FIREBASE_HOST = "";
-const char* FIREBASE_AUTH = "";
+// Replace with your Firebase project credentials
+// Get these from: Firebase Console → Project Settings → Service Accounts → Database secrets
+const char* FIREBASE_HOST = "your-project-default-rtdb.asia-southeast1.firebasedatabase.app";
+const char* FIREBASE_AUTH = "YOUR_FIREBASE_AUTH_TOKEN";
 
 // RFID Module Pins (ESP32)
 #define SS_PIN 4     // SDA connected to GPIO 4
@@ -48,8 +51,10 @@ const char* FIREBASE_AUTH = "";
 #define MOSI_PIN 23
 #define MISO_PIN 19
 
-// Must match PHP logic
-const char* SECRET_SALT = "";
+// Secret salt for RFID hash encryption
+// IMPORTANT: Use a strong random string and keep it secret
+// Must match the salt used in PHP backend (api_backend/login_rfid_fingerprint.php)
+const char* SECRET_SALT = "YOUR_SECRET_SALT_HERE";
  
  // Fingerprint Module Pins (ESP32 - Using Serial2)
  // TX from sensor -> GPIO 16 (RX2)

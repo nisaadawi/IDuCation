@@ -1,8 +1,10 @@
 <?php
+// Database Configuration
+// Replace with your database credentials
 $DB_HOST = "localhost";
-$DB_USER = "hfshaxva_ojou_sama";
-$DB_PASS = "ojouSama2025";
-$DB_NAME = "hfshaxva_iducation";
+$DB_USER = "your_database_username";
+$DB_PASS = "your_database_password";
+$DB_NAME = "your_database_name";
 
 $conn = new mysqli($DB_HOST, $DB_USER, $DB_PASS, $DB_NAME);
 

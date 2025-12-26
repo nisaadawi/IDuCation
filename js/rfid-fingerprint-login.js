@@ -18,12 +18,13 @@ class RFIDFingerprintLogin {
      * Initialize Firebase
      */
     initFirebase() {
-        // TODO: Replace with your Firebase config
+        // Firebase configuration - Replace with your Firebase config
+        // Get your config from: Firebase Console → Project Settings → General → Your apps → Web app
         this.firebaseConfig = {
-            apiKey: "AIzaSyD2PHCWf7DsRpqc164DoMVngRsRx1-hYZk",
-            authDomain: "iducation-web.firebaseapp.com",
-            databaseURL: "https://iducation-web-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "iducation-web"
+            apiKey: "YOUR_FIREBASE_API_KEY",
+            authDomain: "your-project.firebaseapp.com",
+            databaseURL: "https://your-project-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "your-project-id"
         };
 
         // Initialize Firebase
