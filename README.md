@@ -39,7 +39,7 @@ IDuCation integrates three core functions into the Smart ID:
 ## 👥 Target Users  
 | User | Description |
 |------|-------------|
-| **Students** | Rural, Standard 1 – Form 5, no prior IT knowledge required. |
+| **Students** | Rural, Standard 1 – Standard 6, no prior IT knowledge required. |
 | **Teachers** | Community representatives, passionate about teaching, basic tech navigation. |
 | **Admin** | Government officials with IT knowledge, monitoring school development. |
 
