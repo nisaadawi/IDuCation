@@ -11,8 +11,13 @@
 - **YouTube Video Demo**: https://youtu.be/I-Nr2TmY5CI
 - **GitHub Repository**: [https://github.com/nisaadawi/IDuCation](https://github.com/nisaadawi/IDuCation)  
 - **Hackathon Track**: Inclusivity (GODAM Lahl 2.0 Smart ID Hackathon)
-  
+
+#### IDuCation User Interface
 <img width="1861" height="897" alt="image" src="https://github.com/user-attachments/assets/dc12d2c8-8ebe-4129-8242-5c40cd09dfec" />
+
+#### Product Prototype
+<img width="871" height="429" alt="image" src="https://github.com/user-attachments/assets/d9d9a8b5-a120-4131-90d6-c4b986be23ee" />
+
 
 ---
 
